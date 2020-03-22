@@ -140,6 +140,17 @@ static NSArray<MXEmojiRepresentation*> *kSasEmojis;
     return self;
 }
 
+- (void)handleAccept:(MXKeyVerificationAccept*)acceptContent
+{
+    // Must be handled by the specific implementation
+    NSAssert(NO, @"%@ does not implement handleAccept", self.class);
+}
+
+- (void)handleKey:(MXKeyVerificationKey*)keyContent
+{
+    // Must be handled by the specific implementation
+    NSAssert(NO, @"%@ does not implement handleKey", self.class);
+}
 
 - (NSString*)hashUsingAgreedHashMethod:(NSString*)string
 {
@@ -374,7 +385,7 @@ static NSArray<MXEmojiRepresentation*> *kSasEmojis;
                     if ([key.value isEqualToString:[self macUsingAgreedMethod:otherUserMasterKeys.keys
                                                                          info:[NSString stringWithFormat:@"%@%@", baseInfo, keyFullId]]])
                     {
-                        if (self.manager.crypto.crossSigning.isBootstrapped)
+                        if (self.manager.crypto.crossSigning.canCrossSign)
                         {
                             // Mark user as verified
                             NSLog(@"[MXKeyVerification][MXSASTransaction] verifyMacs: Mark user %@ as verified", self.otherDevice.userId);
@@ -391,8 +402,8 @@ static NSArray<MXEmojiRepresentation*> *kSasEmojis;
                         }
                         else
                         {
-                            // TODO (MXCrossSigning.isBootstrapped will be removed in the future)
-                            NSLog(@"[MXKeyVerification][MXSASTransaction] verifyMacs: Cannot Mark user %@ as verified as cross-signing is not fully implemented", self.otherDevice.userId);
+                            // Cross-signing ability should have been checked before going into this hole
+                            NSLog(@"[MXKeyVerification][MXSASTransaction] verifyMacs: Cannot Mark user %@ as verified because this device cannot cross-sign", self.otherDevice.userId);
                         }
 
                     }

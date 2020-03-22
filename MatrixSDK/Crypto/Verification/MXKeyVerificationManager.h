@@ -25,6 +25,8 @@
 #import "MXIncomingSASTransaction.h"
 #import "MXOutgoingSASTransaction.h"
 
+#import "MXQRCodeTransaction.h"
+
 #import "MXEvent.h"
 #import "MXHTTPOperation.h"
 
@@ -184,6 +186,21 @@ FOUNDATION_EXPORT NSString *const MXKeyVerificationManagerNotificationTransactio
  @return the key verification id. Nil if the event is not a verification event.
  */
 - (nullable NSString *)keyVerificationIdFromDMEvent:(MXEvent*)event;
+
+/**
+ Retrieve pending QR code transaction
+
+ @param transactionId The transaction id of the associated verification request event.
+ @return MXQRCodeTransaction instance if a transaction exist or nil.
+ */
+- (nullable MXQRCodeTransaction*)qrCodeTransactionWithTransactionId:(NSString*)transactionId;
+
+/**
+ Remove pending QR code transaction.
+ 
+ @param transactionId The transaction id of the associated verification request event.
+ */
+- (void)removeQRCodeTransactionWithTransactionId:(NSString*)transactionId;
 
 @end
 
