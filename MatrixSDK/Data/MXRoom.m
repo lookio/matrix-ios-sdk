@@ -183,6 +183,8 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
                 {
                     if (onRequesterComplete != nil &&  ![onRequesterComplete isEqual:[NSNull null]]){
                           onRequesterComplete(self->liveTimeline);
+                    }else{
+                        onRequesterComplete(nil);
                     }
                   
                 }
