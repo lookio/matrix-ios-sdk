@@ -191,8 +191,10 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
                 NSLog(@"[MXRoom] liveTimeline loaded. Pending requesters: %@", @(liveTimelineRequesters.count));
             }];
         }
-
-        [pendingLiveTimelineRequesters addObject:onComplete];
+        if (onComplete != nil && ![onComplete isEqual:[NSNull null]]){
+            [pendingLiveTimelineRequesters addObject:onComplete];
+        }
+        
 
         self->needToLoadLiveTimeline = NO;
     }
