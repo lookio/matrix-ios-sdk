@@ -381,9 +381,8 @@ static NSUInteger requestCount = 0;
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
-            NSString *nextBatch = [JSONResponse valueForKey: @"next_batch"];
             NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.maven_messenger.app"];
-
+            NSString *nextBatch = [JSONResponse valueForKey: @"next_batch"];
             NSString *defaultsNextBatch = [defaults stringForKey: @"next_batch"];
 
             if (![nextBatch isEqualToString: defaultsNextBatch]){
