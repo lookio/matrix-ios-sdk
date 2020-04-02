@@ -377,27 +377,6 @@ static NSUInteger requestCount = 0;
 
         NSLog(@"[MXHTTPClient] #%@ - %@ completed in %.0fms" ,@(requestNumber), path, [[NSDate date] timeIntervalSinceDate:startDate] * 1000);
 
-        ///STORE LAST BATCH TO USERDEFAULTS, CHECK IF NEXT BATCH DIFF AND SEND NSNOTIFICATION:
-
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
-            NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.maven_messenger.app"];
-            NSString *nextBatch = [JSONResponse valueForKey: @"next_batch"];
-            NSString *defaultsNextBatch = [defaults stringForKey: @"next_batch"];
-
-            if (![nextBatch isEqualToString: defaultsNextBatch]){
-                [defaults setObject:nextBatch forKey: @"next_batch"];
-
-                [[NSNotificationCenter defaultCenter] postNotificationName: @"MXSyncNotification"
-                                                                    object: nil
-                                                                  userInfo: JSONResponse];
-                [defaults synchronize];
-            }
-
-        });
-
-
-
         if (!weakself)
         {
             // Log which request failed because of a potentiel unexpected object release
