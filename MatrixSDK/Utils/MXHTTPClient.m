@@ -385,7 +385,9 @@ static NSUInteger requestCount = 0;
             NSString *nextBatch = [JSONResponse valueForKey: @"next_batch"];
             NSString *defaultsNextBatch = [defaults stringForKey: @"next_batch"];
 
-            if (![nextBatch isEqualToString: defaultsNextBatch]){
+            if (![nextBatch isEqualToString: defaultsNextBatch] && JSONResponse != nil &&
+                JSONResponse.allValues.count > 0 && nextBatch != nil){
+
                 [defaults setObject:nextBatch forKey: @"next_batch"];
 
                 [[NSNotificationCenter defaultCenter] postNotificationName: @"MXSyncNotification"
