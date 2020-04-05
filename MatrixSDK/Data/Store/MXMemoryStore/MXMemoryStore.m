@@ -298,7 +298,9 @@
 #pragma mark - Matrix users
 - (void)storeUser:(MXUser *)user
 {
-    users[user.userId] = user;
+    @synchronized (self) {
+        users[user.userId] = user;
+    }
 }
 
 - (NSArray<MXUser *> *)users
