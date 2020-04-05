@@ -308,7 +308,9 @@
 
 - (MXUser *)userWithUserId:(NSString *)userId
 {
-    return users[userId];
+   @synchronized (self) {
+         return users[userId];
+    }
 }
 
 #pragma mark - Matrix groups
