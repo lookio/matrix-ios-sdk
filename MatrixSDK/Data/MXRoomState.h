@@ -119,6 +119,9 @@ Use MXRoomSummary.displayname to get a computed room display name.
  */
 @property (nonatomic, readonly) MXRoomHistoryVisibility historyVisibility NS_REFINED_FOR_SWIFT;
 
+@property (nonatomic, readonly) MXRoomMetadata metaData NS_REFINED_FOR_SWIFT;
+
+
 /**
  The join rule of the room.
  */

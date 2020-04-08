@@ -1702,6 +1702,19 @@ MXAuthAction;
                           success:success failure:failure];
 }
 
+-(MXHTTPOperation *)setRoomMetadata:(NSString *)roomId
+                           metadata:(MXRoomMetadata)metadata
+                            success:(void (^)(void))success
+                            failure:(void (^)(NSError *))failure
+{
+    return [self updateStateEvent:kMXEventTypeStringRoomMetadata
+                        withValue:@{
+                            @"mvRoomType":metadata
+                        }
+                           inRoom:roomId
+                          success:success failure:failure];
+}
+
 - (MXHTTPOperation *)historyVisibilityOfRoom:(NSString *)roomId
                                      success:(void (^)(MXRoomHistoryVisibility historyVisibility))success
                                      failure:(void (^)(NSError *))failure
@@ -1719,6 +1732,25 @@ MXAuthAction;
                                    }];
                                }
                            } failure:failure];
+}
+
+- (MXHTTPOperation *)metadataPerRoom:(NSString *)roomId
+                             success:(void (^)(MXRoomMetadata metadata))success
+                             failure:(void (^)(NSError *))failure
+{
+    return [self valueOfStateEvent:kMXEventTypeStringRoomMetadata
+                            inRoom:roomId
+                            success:^(NSDictionary *JSONResponse) {
+    if (success)
+    {
+        __block NSString *metadata;
+        [self dispatchProcessing:^{
+            MXJSONModelSetString(metadata, JSONResponse[@"mvRoomType"]);
+        } andCompletion:^{
+            success(metadata);
+        }];
+    }
+} failure:failure];
 }
 
 - (MXHTTPOperation*)setRoomJoinRule:(NSString*)roomId

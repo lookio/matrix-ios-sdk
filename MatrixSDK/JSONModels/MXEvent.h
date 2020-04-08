@@ -105,6 +105,7 @@ FOUNDATION_EXPORT NSString *const kMXEventTypeStringRoomEncrypted;
 FOUNDATION_EXPORT NSString *const kMXEventTypeStringRoomEncryption;
 FOUNDATION_EXPORT NSString *const kMXEventTypeStringRoomGuestAccess;
 FOUNDATION_EXPORT NSString *const kMXEventTypeStringRoomHistoryVisibility;
+FOUNDATION_EXPORT NSString *const kMXEventTypeStringRoomMetadata;
 FOUNDATION_EXPORT NSString *const kMXEventTypeStringRoomKey;
 FOUNDATION_EXPORT NSString *const kMXEventTypeStringRoomForwardedKey;
 FOUNDATION_EXPORT NSString *const kMXEventTypeStringRoomKeyRequest;

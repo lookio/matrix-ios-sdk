@@ -885,6 +885,13 @@ typedef MXHTTPOperation* (^MXRestClientIdentityServerAccessTokenHandler)(void (^
                                      success:(void (^)(void))success
                                      failure:(void (^)(NSError *error))failure NS_REFINED_FOR_SWIFT;
 
+
+
+-(MXHTTPOperation *)setRoomMetadata:(NSString *)roomId
+                           metadata:(MXRoomMetadata)metadata
+                            success:(void (^)(void))success
+                            failure:(void (^)(NSError *))failure NS_REFINED_FOR_SWIFT;
+
 /**
  Get the history visibility of a room.
 
@@ -897,6 +904,11 @@ typedef MXHTTPOperation* (^MXRestClientIdentityServerAccessTokenHandler)(void (^
 - (MXHTTPOperation*)historyVisibilityOfRoom:(NSString*)roomId
                                     success:(void (^)(MXRoomHistoryVisibility historyVisibility))success
                                     failure:(void (^)(NSError *error))failure NS_REFINED_FOR_SWIFT;
+
+
+- (MXHTTPOperation *)metadataPerRoom:(NSString *)roomId
+                             success:(void (^)(MXRoomMetadata metadata))success
+                             failure:(void (^)(NSError *))failure NS_REFINED_FOR_SWIFT;
 
 /**
  Set the join rule of a room.

@@ -72,6 +72,7 @@ FOUNDATION_EXPORT NSString *const kMXRoomDidFlushDataNotification;
  */
 @property (nonatomic, readonly) NSString *roomId;
 
+@property (nonatomic, strong) MXRoomMetadata mvRoomType;
 /**
  Shortcut to the room summary.
  */
