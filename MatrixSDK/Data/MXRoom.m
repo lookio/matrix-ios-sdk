@@ -143,7 +143,7 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
             [room handleInviteDirectFlag];
         }
     }
-    return room;
+    return [MXSession appendMetadata:room];
 }
 
 - (void)close

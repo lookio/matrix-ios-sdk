@@ -970,6 +970,7 @@ typedef void (^MXOnBackgroundSyncFail)(NSError *error);
  */
 - (NSArray<MXRoomSummary*>*)roomsSummaries;
 
++ (MXRoom*) appendMetadata:(MXRoom *)room;
 /**
  Recompute all room summaries last message.
 

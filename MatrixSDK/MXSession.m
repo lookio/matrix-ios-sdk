@@ -920,8 +920,67 @@ typedef void (^MXOnResumeDone)(void);
 }
 
 
-#pragma mark - Server sync
 
+#pragma mark -Metadata
+static void deriveMetadataFromSync(MXRoom *room, MXRoomSync *roomSync) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
+        for (MXEvent *event in roomSync.timeline.events){
+
+            if ([event.type isEqualToString: @"m.room.metadata"]){
+                NSDictionary* dict = event.JSONDictionary;
+                NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.maven_messenger.app"];
+                if (dict[@"content"][@"mvRoomType"] != nil){
+                    NSString *mvRoomType = dict[@"content"][@"mvRoomType"];
+                    NSString* key = [NSString stringWithFormat:@"%@:%@", @"mvRoomType", room.roomId];
+
+                    if ([mvRoomType isEqualToString: kMXRoomMetadataPeer]){
+                        [defaults setObject:kMXRoomMetadataPeer forKey: key];
+                        room.mvRoomType =  kMXRoomMetadataPeer;
+                    }
+                    else if ([mvRoomType isEqualToString: kMXRoomMetadataBusiness]){
+                        [defaults setObject:kMXRoomMetadataBusiness forKey: key];
+                        room.mvRoomType = kMXRoomMetadataBusiness;
+                    }
+                    else if ([mvRoomType isEqualToString: kMXRoomMetadataIntent]){
+                        [defaults setObject:kMXRoomMetadataIntent forKey: key];
+                        room.mvRoomType = kMXRoomMetadataIntent;
+                    }
+                    else if ([mvRoomType isEqualToString: kMXRoomMetadataGroup]){
+                        [defaults setObject:kMXRoomMetadataGroup forKey: key];
+                        room.mvRoomType = kMXRoomMetadataGroup;
+                    }
+                }
+                [defaults synchronize];
+            }
+        }
+    });
+}
+
++ (MXRoom*) appendMetadata:(MXRoom *)room
+{
+    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.maven_messenger.app"];
+    NSString* key = [NSString stringWithFormat:@"%@:%@", @"mvRoomType", room.roomId];
+    NSString* keyMod = [[key componentsSeparatedByString:@":"] firstObject];
+    NSString* mvRoomType = [defaults objectForKey:keyMod];
+
+    if ([mvRoomType isEqualToString: kMXRoomMetadataPeer]){
+        room.mvRoomType =  kMXRoomMetadataPeer;
+    }
+    else if ([mvRoomType isEqualToString: kMXRoomMetadataBusiness]){
+        room.mvRoomType = kMXRoomMetadataBusiness;
+    }
+    else if ([mvRoomType isEqualToString: kMXRoomMetadataIntent]){
+        room.mvRoomType = kMXRoomMetadataIntent;
+    }
+    else if ([mvRoomType isEqualToString: kMXRoomMetadataGroup]){
+        room.mvRoomType = kMXRoomMetadataGroup;
+    }
+    return room;
+}
+
+
+#pragma mark - Server sync
 - (void)serverSyncWithServerTimeout:(NSUInteger)serverTimeout
                             success:(void (^)(void))success
                             failure:(void (^)(NSError *error))failure
@@ -994,29 +1053,8 @@ typedef void (^MXOnResumeDone)(void);
                 // Retrieve existing room or create a new one
                 MXRoom *room = [self getOrCreateRoom:roomId notify:!isInitialSync];
 
-                for (MXEvent *event in roomSync.timeline.events){
-                    if ([event.type isEqualToString: @"m.room.metadata"]){
-                        NSDictionary* dict = event.JSONDictionary;
-
-                        if (dict[@"content"][@"mvRoomType"] != nil){
-
-                            NSString *mvRoomType = dict[@"content"][@"mvRoomType"];
-
-                            if ([mvRoomType isEqualToString: kMXRoomMetadataPeer]){
-                                room.mvRoomType =  kMXRoomMetadataPeer;
-                            }
-                            else if ([mvRoomType isEqualToString: kMXRoomMetadataBusiness]){
-                                room.mvRoomType = kMXRoomMetadataBusiness;
-                            }
-                            else if ([mvRoomType isEqualToString: kMXRoomMetadataIntent]){
-                                room.mvRoomType = kMXRoomMetadataIntent;
-                            }
-                            else if ([mvRoomType isEqualToString: kMXRoomMetadataGroup]){
-                                room.mvRoomType = kMXRoomMetadataGroup;
-                            }
-                        }
-                    }
-                }
+                ///Derive mvRoomType:
+                deriveMetadataFromSync(room, roomSync);
 
                 // Sync room
                 [room liveTimeline:^(MXEventTimeline *liveTimeline) {
@@ -2248,7 +2286,8 @@ typedef void (^MXOnResumeDone)(void);
     {
         room = [self createRoom:roomId notify:notify];
     }
-    return room;
+
+    return [MXSession appendMetadata:room];
 }
 
 - (MXRoom *)createRoom:(NSString *)roomId notify:(BOOL)notify
@@ -2334,10 +2373,7 @@ typedef void (^MXOnResumeDone)(void);
         [self addRoom:room notify:NO];
     }
 
-    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.maven_messenger.app"];
-
-
-    return room;
+    return [MXSession appendMetadata:room];
 }
 
 - (void)preloadRoomsData:(NSArray<NSString*> *)roomIds onComplete:(dispatch_block_t)onComplete
@@ -2351,7 +2387,7 @@ typedef void (^MXOnResumeDone)(void);
         if (room)
         {
             dispatch_group_enter(group);
-            [room liveTimeline:^(MXEventTimeline *liveTimeline) {
+            [[MXSession appendMetadata:room] liveTimeline:^(MXEventTimeline *liveTimeline) {
                 dispatch_group_leave(group);
             }];
         }
@@ -2361,6 +2397,7 @@ typedef void (^MXOnResumeDone)(void);
         }
     }
 
+    
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         NSLog(@"[MXSession] preloadRoomsForSyncResponse: DONE");
         onComplete();
