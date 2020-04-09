@@ -59,6 +59,12 @@ NSString *const kMXRoomJoinRuleInvite  = @"invite";
 NSString *const kMXRoomJoinRulePrivate = @"private";
 NSString *const kMXRoomJoinRuleKnock   = @"knock";
 
+
+NSString *const kMXRoomMetadataIntent   = @"intent";
+NSString *const kMXRoomMetadataGroup    = @"group";
+NSString *const kMXRoomMetadataPeer     = @"peer";
+NSString *const kMXRoomMetadataBusiness = @"business";
+
 /**
  Room presets
  */
