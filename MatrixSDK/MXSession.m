@@ -224,7 +224,6 @@ typedef void (^MXOnResumeDone)(void);
                                       kMXEventTypeStringRoomCanonicalAlias,
                                       kMXEventTypeStringRoomGuestAccess,
                                       kMXEventTypeStringRoomHistoryVisibility,
-                                      kMXEventTypeStringRoomMetadata,
                                       kMXEventTypeStringRoomMessage,
                                       kMXEventTypeStringRoomMessageFeedback,
                                       kMXEventTypeStringRoomRedaction,
@@ -994,27 +993,6 @@ typedef void (^MXOnResumeDone)(void);
 
                 // Retrieve existing room or create a new one
                 MXRoom *room = [self getOrCreateRoom:roomId notify:!isInitialSync];
-                //add metadata:
-                for (MXEvent *event in roomSync.timeline.events){
-                    if ([event.type isEqualToString: kMXEventTypeStringRoomMetadata]){
-                        NSDictionary* dict = event.JSONDictionary;
-                        if ([dict[@"content"][@"mvRoomType"] isEqualToString: kMXRoomMetadataPeer]){
-                            room.mvRoomType =  kMXRoomMetadataPeer;
-                        }
-                        else if ([dict[@"content"][@"mvRoomType"] isEqualToString: kMXRoomMetadataBusiness]){
-                            room.mvRoomType = kMXRoomMetadataBusiness;
-                        }
-                        else if ([dict[@"content"][@"mvRoomType"] isEqualToString: kMXRoomMetadataIntent]){
-                            room.mvRoomType = kMXRoomMetadataIntent;
-                        }
-                        else if ([dict[@"content"][@"mvRoomType"] isEqualToString: kMXRoomMetadataGroup]){
-                            room.mvRoomType = kMXRoomMetadataGroup;
-                        }
-                    }
-                }
-                
-                
-             
 
                 // Sync room
                 [room liveTimeline:^(MXEventTimeline *liveTimeline) {

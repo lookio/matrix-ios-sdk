@@ -41,7 +41,6 @@ public enum MXEventType: Equatable, Hashable {
     case roomEncryption
     case roomGuestAccess
     case roomHistoryVisibility
-    case roomMetadata
     case roomKey
     case roomForwardedKey
     case roomKeyRequest
@@ -83,7 +82,6 @@ public enum MXEventType: Equatable, Hashable {
         case .roomEncryption: return kMXEventTypeStringRoomEncryption
         case .roomGuestAccess: return kMXEventTypeStringRoomGuestAccess
         case .roomHistoryVisibility: return kMXEventTypeStringRoomHistoryVisibility
-        case .roomMetadata: return kMXEventTypeStringRoomMetadata
         case .roomKey: return kMXEventTypeStringRoomKey
         case .roomForwardedKey: return kMXEventTypeStringRoomForwardedKey
         case .roomKeyRequest: return kMXEventTypeStringRoomKeyRequest

@@ -52,19 +52,6 @@ NSString *const kMXRoomHistoryVisibilityInvited      = @"invited";
 NSString *const kMXRoomHistoryVisibilityJoined       = @"joined";
 
 /**
- Metadata:
-
- intent
- group
- peer
- business
- */
-NSString *const kMXRoomMetadataIntent   = @"intent";
-NSString *const kMXRoomMetadataGroup    = @"group";
-NSString *const kMXRoomMetadataPeer     = @"peer";
-NSString *const kMXRoomMetadataBusiness = @"business";
-
-/**
  Room join rule.
  */
 NSString *const kMXRoomJoinRulePublic  = @"public";

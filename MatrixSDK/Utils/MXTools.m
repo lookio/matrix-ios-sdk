@@ -82,7 +82,6 @@ NSCharacterSet *uriComponentCharset;
                                 kMXEventTypeStringRoomEncryption,
                                 kMXEventTypeStringRoomGuestAccess,
                                 kMXEventTypeStringRoomHistoryVisibility,
-                                kMXEventTypeStringRoomMetadata,
                                 kMXEventTypeStringRoomKey,
                                 kMXEventTypeStringRoomForwardedKey,
                                 kMXEventTypeStringRoomKeyRequest,

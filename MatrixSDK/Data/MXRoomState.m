@@ -299,20 +299,6 @@
     return historyVisibility;
 }
 
-- (MXRoomMetadata)metaData
-{
-    MXRoomMetadata metadata = kMXRoomMetadataIntent;
-    
-    MXEvent *event = [stateEvents objectForKey:kMXEventTypeStringRoomMetadata].lastObject;
-    if (event && [self contentOfEvent:event])
-    {
-        MXJSONModelSetString(metadata,[self contentOfEvent:event][@"mvRoomType"])
-        metadata = [metadata copy];
-    }
-    
-    return metadata;
-}
-
 - (MXRoomJoinRule)joinRule
 {
     MXRoomJoinRule joinRule = kMXRoomJoinRuleInvite;
