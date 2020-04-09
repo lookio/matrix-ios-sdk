@@ -2333,6 +2333,10 @@ typedef void (^MXOnResumeDone)(void);
     {
         [self addRoom:room notify:NO];
     }
+
+    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.maven_messenger.app"];
+
+
     return room;
 }
 
