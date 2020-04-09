@@ -927,8 +927,6 @@ static void deriveMetadataFromSync(MXRoom *room, MXRoomSync *roomSync) {
 
         NSString *filePath = [MXSession getMavenArchiveFilepath];
 
-       // NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.maven_messenger.app"];
-
         for (MXEvent *event in roomSync.timeline.events){
 
             if ([event.type isEqualToString: @"m.room.metadata"]){
