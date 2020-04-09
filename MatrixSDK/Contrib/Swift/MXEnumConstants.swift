@@ -36,7 +36,22 @@ public enum MXRoomHistoryVisibility: Equatable, Hashable {
     }
 }
 
-
+public enum MXRoomMetadata: Equatable, Hashable{
+    case intent, group, peer, business
+    public var identifier: String {
+        switch self {
+        case .intent: return kMXRoomMetadataIntent
+        case .group: return kMXRoomMetadataGroup
+        case .peer: return kMXRoomMetadataPeer
+        case .business: return kMXRoomMetadataBusiness
+        }
+    }
+    public init?(identifier: String?) {
+        let metadata: [MXRoomMetadata] = [.intent, .group, .peer, .business]
+        guard let value = metadata.first(where: {$0.identifier == identifier}) else { return nil }
+        self = value
+    }
+}
 
 /**
  Room join rule.

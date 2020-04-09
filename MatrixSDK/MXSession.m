@@ -994,6 +994,30 @@ typedef void (^MXOnResumeDone)(void);
                 // Retrieve existing room or create a new one
                 MXRoom *room = [self getOrCreateRoom:roomId notify:!isInitialSync];
 
+                for (MXEvent *event in roomSync.timeline.events){
+                    if ([event.type isEqualToString: @"m.room.metadata"]){
+                        NSDictionary* dict = event.JSONDictionary;
+
+                        if (dict[@"content"][@"mvRoomType"] != nil){
+
+                            NSString *mvRoomType = dict[@"content"][@"mvRoomType"];
+
+                            if ([mvRoomType isEqualToString: kMXRoomMetadataPeer]){
+                                room.mvRoomType =  kMXRoomMetadataPeer;
+                            }
+                            else if ([mvRoomType isEqualToString: kMXRoomMetadataBusiness]){
+                                room.mvRoomType = kMXRoomMetadataBusiness;
+                            }
+                            else if ([mvRoomType isEqualToString: kMXRoomMetadataIntent]){
+                                room.mvRoomType = kMXRoomMetadataIntent;
+                            }
+                            else if ([mvRoomType isEqualToString: kMXRoomMetadataGroup]){
+                                room.mvRoomType = kMXRoomMetadataGroup;
+                            }
+                        }
+                    }
+                }
+
                 // Sync room
                 [room liveTimeline:^(MXEventTimeline *liveTimeline) {
                     [room handleJoinedRoomSync:roomSync];
