@@ -1093,7 +1093,7 @@ static void deriveMetadataFromSync(MXRoom *room, MXRoomSync *roomSync) {
                 MXRoom *room = [self getOrCreateRoom:roomId notify:!isInitialSync];
 
                 ///Derive mvRoomType:
-               // deriveMetadataFromSync(room, invitedRoomSync);
+
 
                 // Prepare invited room
                 [room liveTimeline:^(MXEventTimeline *liveTimeline) {
@@ -1120,7 +1120,7 @@ static void deriveMetadataFromSync(MXRoom *room, MXRoomSync *roomSync) {
                 {
 
                     ///Derive mvRoomType:
-                   // deriveMetadataFromSync(room, leftRoomSync);
+
 
                     // FIXME SYNCV2: While 'handleArchivedRoomSync' is not available,
                     // use 'handleJoinedRoomSync' to pass the last events to the room before leaving it.
