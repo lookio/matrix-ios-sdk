@@ -922,12 +922,12 @@ typedef void (^MXOnResumeDone)(void);
 
 
 #pragma mark -Metadata
-static void deriveMetadataFromSync(MXRoom *room, MXRoomSync *roomSync) {
+static void deriveMetadataFromSync(MXRoom *room, NSArray* events) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
         NSString *filePath = [MXSession getMavenArchiveFilepath];
 
-        for (MXEvent *event in roomSync.timeline.events){
+        for (MXEvent *event in events){
 
             if ([event.type isEqualToString: @"m.room.metadata"]){
                 NSDictionary* dict = event.JSONDictionary;
@@ -1072,7 +1072,7 @@ static void deriveMetadataFromSync(MXRoom *room, MXRoomSync *roomSync) {
                 MXRoom *room = [self getOrCreateRoom:roomId notify:!isInitialSync];
 
                 ///Derive mvRoomType:
-                deriveMetadataFromSync(room, roomSync);
+                deriveMetadataFromSync(room, roomSync.timeline.events);
 
                 // Sync room
                 [room liveTimeline:^(MXEventTimeline *liveTimeline) {
@@ -1093,7 +1093,7 @@ static void deriveMetadataFromSync(MXRoom *room, MXRoomSync *roomSync) {
                 MXRoom *room = [self getOrCreateRoom:roomId notify:!isInitialSync];
 
                 ///Derive mvRoomType:
-
+                deriveMetadataFromSync(room, invitedRoomSync.inviteState.events);
 
                 // Prepare invited room
                 [room liveTimeline:^(MXEventTimeline *liveTimeline) {
