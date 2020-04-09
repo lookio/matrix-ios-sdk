@@ -460,6 +460,9 @@ FOUNDATION_EXPORT NSString *const kMXSessionNoRoomTag;
  */
 @property (nonatomic, readonly) MXAggregations *aggregations;
 
+#pragma mark -Metadata
++(NSString*)getMavenArchiveFilepath;
+
 #pragma mark - Class methods
 
 /**
