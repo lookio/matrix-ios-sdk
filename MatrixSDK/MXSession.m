@@ -941,18 +941,18 @@ static void deriveMetadataFromSync(MXRoom *room, NSArray* events) {
                     [NSKeyedArchiver archiveRootObject:saveDict toFile:filePath];
 
                     //setting to in-memroy & archive:
-                    if ([mvRoomType isEqualToString: kMXRoomMetadataPeer]){
-                        room.mvRoomType =  kMXRoomMetadataPeer;
-                    }
-                    else if ([mvRoomType isEqualToString: kMXRoomMetadataBusiness]){
-                        room.mvRoomType = kMXRoomMetadataBusiness;
-                    }
-                    else if ([mvRoomType isEqualToString: kMXRoomMetadataIntent]){
-                        room.mvRoomType = kMXRoomMetadataIntent;
-                    }
-                    else if ([mvRoomType isEqualToString: kMXRoomMetadataGroup]){
-                        room.mvRoomType = kMXRoomMetadataGroup;
-                    }
+//                    if ([mvRoomType isEqualToString: kMXRoomMetadataPeer]){
+//                        room.mvRoomType =  kMXRoomMetadataPeer;
+//                    }
+//                    else if ([mvRoomType isEqualToString: kMXRoomMetadataBusiness]){
+//                        room.mvRoomType = kMXRoomMetadataBusiness;
+//                    }
+//                    else if ([mvRoomType isEqualToString: kMXRoomMetadataIntent]){
+//                        room.mvRoomType = kMXRoomMetadataIntent;
+//                    }
+//                    else if ([mvRoomType isEqualToString: kMXRoomMetadataGroup]){
+//                        room.mvRoomType = kMXRoomMetadataGroup;
+//                    }
                 }
             }
         }
@@ -984,18 +984,18 @@ static void deriveMetadataFromSync(MXRoom *room, NSArray* events) {
     }
 
 
-    if ([mvRoomType isEqualToString: kMXRoomMetadataPeer]){
-        room.mvRoomType =  kMXRoomMetadataPeer;
-    }
-    else if ([mvRoomType isEqualToString: kMXRoomMetadataBusiness]){
-        room.mvRoomType = kMXRoomMetadataBusiness;
-    }
-    else if ([mvRoomType isEqualToString: kMXRoomMetadataIntent]){
-        room.mvRoomType = kMXRoomMetadataIntent;
-    }
-    else if ([mvRoomType isEqualToString: kMXRoomMetadataGroup]){
-        room.mvRoomType = kMXRoomMetadataGroup;
-    }
+//    if ([mvRoomType isEqualToString: kMXRoomMetadataPeer]){
+//        room.mvRoomType =  kMXRoomMetadataPeer;
+//    }
+//    else if ([mvRoomType isEqualToString: kMXRoomMetadataBusiness]){
+//        room.mvRoomType = kMXRoomMetadataBusiness;
+//    }
+//    else if ([mvRoomType isEqualToString: kMXRoomMetadataIntent]){
+//        room.mvRoomType = kMXRoomMetadataIntent;
+//    }
+//    else if ([mvRoomType isEqualToString: kMXRoomMetadataGroup]){
+//        room.mvRoomType = kMXRoomMetadataGroup;
+//    }
     return room;
 }
 
