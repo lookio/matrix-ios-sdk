@@ -923,6 +923,7 @@ typedef void (^MXOnResumeDone)(void);
 
 #pragma mark -Metadata
 static void deriveMetadataFromSync(MXRoom *room, NSArray* events) {
+    return;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
         NSString *filePath = [MXSession getMavenArchiveFilepath];
@@ -968,6 +969,7 @@ static void deriveMetadataFromSync(MXRoom *room, NSArray* events) {
 
 + (MXRoom*) appendMetadata:(MXRoom *)room
 {
+    return room;
 
     NSString *filePath = [MXSession getMavenArchiveFilepath];
     NSString * mvRoomType = @"";
@@ -2412,7 +2414,7 @@ static void deriveMetadataFromSync(MXRoom *room, NSArray* events) {
         if (room)
         {
             dispatch_group_enter(group);
-            [[MXSession appendMetadata:room] liveTimeline:^(MXEventTimeline *liveTimeline) {
+            [room liveTimeline:^(MXEventTimeline *liveTimeline) {
                 dispatch_group_leave(group);
             }];
         }
