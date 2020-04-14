@@ -189,7 +189,7 @@ typedef void (^MXOnRoomEvent)(MXEvent *event, MXTimelineDirection direction, MXR
 - (MXHTTPOperation*)paginate:(NSUInteger)numItems
                    direction:(MXTimelineDirection)direction
                onlyFromStore:(BOOL)onlyFromStore
-                    complete:(void (^)(void))complete
+                    complete:(void (^)(NSArray<MXEvent *> *items))complete
                      failure:(void (^)(NSError *error))failure NS_REFINED_FOR_SWIFT;
 
 /**

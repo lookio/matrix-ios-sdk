@@ -372,7 +372,7 @@ static NSUInteger const kMXRoomSummaryTrustComputationDelayMs = 1000;
                 // Paginate events from the homeserver
                 // XXX: Pagination on the timeline may conflict with request from the app
                 __block MXHTTPOperation *newOperation;
-                newOperation = [liveTimeline paginate:messagesToPaginate direction:MXTimelineDirectionBackwards onlyFromStore:NO complete:^{
+                newOperation = [liveTimeline paginate:messagesToPaginate direction:MXTimelineDirectionBackwards onlyFromStore:NO complete:^(NSArray<MXEvent *> *items) {
 
                     // Received messages have been stored in the store. We can make a new loop
                     [self fetchLastMessage:complete failure:failure

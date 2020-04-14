@@ -77,7 +77,7 @@ public extension MXEventTimeline {
      
      - returns: a MXHTTPOperation instance. This instance can be nil if no request to the homeserver is required.
      */
-    @nonobjc @discardableResult func paginate(_ numItems: UInt, direction: MXTimelineDirection, onlyFromStore: Bool, completion: @escaping (_ response: MXResponse<Void>) -> Void) -> MXHTTPOperation? {
+    @nonobjc @discardableResult func paginate(_ numItems: UInt, direction: MXTimelineDirection, onlyFromStore: Bool, completion: @escaping (_ response: MXResponse<[MXEvent]>) -> Void) -> MXHTTPOperation? {
         return __paginate(numItems, direction: direction.identifier, onlyFromStore: onlyFromStore, complete: currySuccess(completion), failure: curryFailure(completion))
     }
     
