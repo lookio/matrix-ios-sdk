@@ -229,7 +229,12 @@ NSString *const kMXRoomInviteStateEventIdPrefix = @"invite-";
 }
 
 
-- (MXHTTPOperation *)paginate:(NSUInteger)numItems direction:(MXTimelineDirection)direction onlyFromStore:(BOOL)onlyFromStore complete:(void (^)(NSArray<MXEvent *> *))complete failure:(void (^)(NSError *))failure
+- (MXHTTPOperation *)paginate:(NSUInteger)numItems
+                    direction:(MXTimelineDirection)direction
+                onlyFromStore:(BOOL)onlyFromStore
+                includeEvents:(BOOL)includeEvents
+                     complete:(void (^)(NSArray<MXEvent *> *))complete
+                      failure:(void (^)(NSError *))failure
 {
     MXHTTPOperation *operation;
 
@@ -271,7 +276,12 @@ NSString *const kMXRoomInviteStateEventIdPrefix = @"invite-";
 
         if (onlyFromStore && messagesFromStoreCount)
         {
-            complete(foundItems);
+            if (includeEvents){
+                complete(foundItems);
+            }else{
+                complete(nil);
+            }
+
 
             NSLog(@"[MXEventTimeline] paginate : is done from the store");
             return nil;
@@ -281,7 +291,11 @@ NSString *const kMXRoomInviteStateEventIdPrefix = @"invite-";
         {
             if (foundItems.count >= numItems) {
                 // Nothing more to do
-                complete(foundItems);
+                if (includeEvents){
+                    complete(foundItems);
+                }else{
+                    complete(nil);
+                }
                 
                 NSLog(@"[MXEventTimeline] paginate: is done");
                 return nil;
@@ -293,7 +307,11 @@ NSString *const kMXRoomInviteStateEventIdPrefix = @"invite-";
     if (direction == MXTimelineDirectionForwards && YES == hasReachedHomeServerForwardsPaginationEnd)
     {
         // Nothing more to do
-        complete(foundItems);
+        if (includeEvents){
+            complete(foundItems);
+        }else{
+            complete(nil);
+        }
 
         NSLog(@"[MXEventTimeline] paginate: is done");
         return nil;
@@ -333,7 +351,11 @@ NSString *const kMXRoomInviteStateEventIdPrefix = @"invite-";
 
         // Inform the method caller
         [serverFetched addObjectsFromArray:foundItems];
-        complete(serverFetched);
+        if (includeEvents){
+            complete(foundItems);
+        }else{
+            complete(nil);
+        }
 
         NSLog(@"[MXEventTimeline] paginate: is done");
 
@@ -357,7 +379,11 @@ NSString *const kMXRoomInviteStateEventIdPrefix = @"invite-";
             NSLog(@"[MXEventTimeline] paginate: pagination end has been reached");
 
             // Ignore the error
-            complete(foundItems);
+           if (includeEvents){
+                complete(foundItems);
+            }else{
+                complete(nil);
+            }
             return;
         }
 
