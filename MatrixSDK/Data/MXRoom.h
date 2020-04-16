@@ -67,6 +67,7 @@ FOUNDATION_EXPORT NSString *const kMXRoomDidFlushDataNotification;
  */
 @interface MXRoom : NSObject
 
+@property (nonatomic, strong) NSString *mvRoomType;
 /**
  The Matrix id of the room.
  */
