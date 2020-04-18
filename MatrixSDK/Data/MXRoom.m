@@ -2748,6 +2748,10 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
     
     // Retrieve the most recent event of the room.
     MXEvent *lastEvent = [mxSession.store messagesEnumeratorForRoom:self.roomId].nextEvent;
+    if (lastEvent == nil){
+        return;
+    }
+    
     NSString *lastMessageEventId = lastEvent.eventId;
     
     // Sanity check: Do not send read marker on event without id.
