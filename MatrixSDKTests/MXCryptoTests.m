@@ -208,7 +208,7 @@
             NSString *deviceCurve25519Key = mxSession2.crypto.olmDevice.deviceCurve25519Key;
             NSString *deviceEd25519Key = mxSession2.crypto.olmDevice.deviceEd25519Key;
 
-            NSArray<MXDeviceInfo *> *myUserDevices = [mxSession2.crypto.deviceList storedDevicesForUser:mxSession.myUser.userId];
+            NSArray<MXDeviceInfo *> *myUserDevices = [mxSession2.crypto.deviceList storedDevicesForUser:mxSession.myUserId];
             XCTAssertEqual(myUserDevices.count, 1);
 
             MXRestClient *bobRestClient = mxSession2.matrixRestClient;
@@ -1619,9 +1619,23 @@
         
         // We force the room history visibility for JOINED members.
         [aliceSession.matrixRestClient setRoomHistoryVisibility:roomId historyVisibility:kMXRoomHistoryVisibilityJoined success:^{
-            
+
             // Send a first message whereas Bob is invited
-            [roomFromAlicePOV sendTextMessage:messageFromAlice success:nil failure:^(NSError *error) {
+            [roomFromAlicePOV sendTextMessage:messageFromAlice success:^(NSString *eventId) {
+
+                // Make sure Bob joins room after the first message was sent.
+                [bobSession joinRoom:roomId viaServers:nil success:^(MXRoom *room) {
+                    // Send a second message to Bob who just joins the room
+                    [roomFromAlicePOV sendTextMessage:message2FromAlice success:nil failure:^(NSError *error) {
+                        XCTFail(@"Cannot set up intial test conditions - error: %@", error);
+                        [expectation fulfill];
+                    }];
+                } failure:^(NSError *error) {
+                    NSAssert(NO, @"Cannot join a room - error: %@", error);
+                    [expectation fulfill];
+                }];
+                
+            } failure:^(NSError *error) {
                 XCTFail(@"Cannot set up intial test conditions - error: %@", error);
                 [expectation fulfill];
             }];
@@ -1635,17 +1649,6 @@
                     [expectation fulfill];
                 }
                 
-            }];
-            
-            [bobSession joinRoom:roomId viaServers:nil success:^(MXRoom *room) {
-                // Send a second message to Bob who just joins the room
-                [roomFromAlicePOV sendTextMessage:message2FromAlice success:nil failure:^(NSError *error) {
-                    XCTFail(@"Cannot set up intial test conditions - error: %@", error);
-                    [expectation fulfill];
-                }];
-            } failure:^(NSError *error) {
-                NSAssert(NO, @"Cannot join a room - error: %@", error);
-                [expectation fulfill];
             }];
             
         } failure:^(NSError *error) {
@@ -2830,6 +2833,31 @@
         // - 1- Alice sends a message in a room
         [roomFromAlicePOV sendTextMessage:message success:nil failure:^(NSError *error) {
             XCTFail(@"Cannot set up intial test conditions - error: %@", error);
+            [expectation fulfill];
+        }];
+    }];
+}
+
+// - Have Alice
+// - Alice logs in on a new device
+// -> The first device must get notified by the new sign-in
+- (void)testMXDeviceListDidUpdateUsersDevicesNotification
+{
+    // - Have Alice
+    [matrixSDKTestsE2EData doE2ETestWithAliceInARoom:self readyToTest:^(MXSession *aliceSession, NSString *roomId, XCTestExpectation *expectation) {
+        
+        // - Alice logs in on a new device
+        [matrixSDKTestsE2EData loginUserOnANewDevice:aliceSession.matrixRestClient.credentials withPassword:MXTESTS_ALICE_PWD onComplete:^(MXSession *newAliceSession) {
+        }];
+        
+        // -> The first device must get notified by the new sign-in
+        observer = [[NSNotificationCenter defaultCenter] addObserverForName:MXDeviceListDidUpdateUsersDevicesNotification object:aliceSession.crypto queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+            
+            NSDictionary *userInfo = notification.userInfo;
+            NSArray<MXDeviceInfo*> *myUserDevices = userInfo[aliceSession.myUser.userId];
+            
+            XCTAssertEqual(myUserDevices.count, 2);
+            
             [expectation fulfill];
         }];
     }];

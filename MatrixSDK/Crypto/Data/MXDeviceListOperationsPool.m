@@ -61,6 +61,11 @@
 
 - (void)addOperation:(MXDeviceListOperation *)operation
 {
+    // If the request is already made, we can only accept operations
+    // for users we made the request
+    NSParameterAssert(_httpOperation == nil
+                      || [self hasUsers:operation.userIds]);
+    
     if (![_operations containsObject:operation])
     {
         [_operations addObject:operation];
@@ -75,6 +80,11 @@
     {
         [self cancel];
     }
+}
+        
+- (BOOL)hasUsers:(NSArray<NSString*>*)userIds
+{
+    return [[NSSet setWithArray:userIds] isSubsetOfSet:self.userIds];
 }
 
 - (void)downloadKeys:(NSString *)token complete:(void (^)(NSDictionary<NSString *, NSDictionary *> *failedUserIds))complete
@@ -94,6 +104,9 @@
         NSLog(@"[MXDeviceListOperationsPool] doKeyDownloadForUsers(pool: %p) -> DONE. Got keys for %@ users and %@ devices. Got cross-signing keys for %@ users", self, @(keysQueryResponse.deviceKeys.map.count), @(keysQueryResponse.deviceKeys.count), @(keysQueryResponse.crossSigningKeys.count));
 
         self->_httpOperation = nil;
+        
+        NSMutableDictionary<NSString* /* userId */, NSArray<MXDeviceInfo*>*> *usersDevices = [NSMutableDictionary new];
+        NSMutableDictionary<NSString* /* userId */, NSArray<MXDeviceInfo*>*> *updatedUsersDevices = [NSMutableDictionary new];
 
         for (NSString *userId in users)
         {
@@ -102,11 +115,20 @@
             if (crossSigningKeys)
             {
                 NSLog(@"[MXDeviceListOperationsPool] doKeyDownloadForUsers: Got cross-signing keys for %@: %@", userId, crossSigningKeys);
+                
+                MXCrossSigningInfo *storedCrossSigningKeys = [self->crypto.store crossSigningKeysForUser:userId];
+                
+                // Use current trust level
+                MXUserTrustLevel *oldTrustLevel = storedCrossSigningKeys.trustLevel;
+                [crossSigningKeys setTrustLevel:oldTrustLevel];
 
                 // Compute trust on this user
                 // Note this overwrites the previous value
                 BOOL isCrossSigningVerified = [self->crypto.crossSigning isUserWithCrossSigningKeysVerified:crossSigningKeys];
-                [crossSigningKeys updateTrustLevel:[MXUserTrustLevel trustLevelWithCrossSigningVerified:isCrossSigningVerified]];
+                MXUserTrustLevel *newTrustLevel = [MXUserTrustLevel trustLevelWithCrossSigningVerified:isCrossSigningVerified
+                                                                                       locallyVerified:oldTrustLevel.isLocallyVerified];
+                
+                [crossSigningKeys updateTrustLevel:newTrustLevel];
                 
                 // Note that keys which aren't in the response will be removed from the store
                 [self->crypto.store storeCrossSigningKeys:crossSigningKeys];
@@ -121,11 +143,13 @@
             if (devices)
             {
                 NSMutableDictionary<NSString*, MXDeviceInfo*> *mutabledevices = [NSMutableDictionary dictionaryWithDictionary:devices];
+                
+                NSDictionary<NSString*, MXDeviceInfo*> *storedDevices = [self->crypto.store devicesForUser:userId];
 
                 for (NSString *deviceId in mutabledevices.allKeys)
                 {
                     // Get the potential previously store device keys for this device
-                    MXDeviceInfo *previouslyStoredDeviceKeys = [self->crypto.store deviceWithDeviceId:deviceId forUser:userId];
+                    MXDeviceInfo *previouslyStoredDeviceKeys = storedDevices[deviceId];
 
                     MXDeviceVerification previousLocalState = MXDeviceUnknown;
                     
@@ -148,23 +172,53 @@
                         // So, transfer its previous value
                         previousLocalState = previouslyStoredDeviceKeys.trustLevel.localVerificationStatus;
                     }
-
+                    
+                    // Use current trust level
+                    MXDeviceTrustLevel *oldTrustLevel = [MXDeviceTrustLevel trustLevelWithLocalVerificationStatus:previousLocalState
+                                                                                             crossSigningVerified:previouslyStoredDeviceKeys.trustLevel.isCrossSigningVerified];
+                    [mutabledevices[deviceId] setTrustLevel:oldTrustLevel];
+                    
+                    
                     BOOL crossSigningVerified = [self->crypto.crossSigning isDeviceVerified:mutabledevices[deviceId]];
                     MXDeviceTrustLevel *trustLevel = [MXDeviceTrustLevel trustLevelWithLocalVerificationStatus:previousLocalState
                                                                                           crossSigningVerified:crossSigningVerified];
-
+                    
                     [mutabledevices[deviceId] updateTrustLevel:trustLevel];
                 }
 
-                // Update the store
-                // Note that devices which aren't in the response will be removed from the store
-                [self->crypto.store storeDevicesForUser:userId devices:mutabledevices];
+                NSArray *mutableDevicesValues = mutabledevices.allValues;
+                usersDevices[userId] = mutableDevicesValues;
+                
+                if (![mutabledevices isEqualToDictionary:storedDevices])
+                {
+                    NSArray *storedDevicesValues = storedDevices.allValues;
+                    
+                    // Keep only devices that are not identical to those present in the database
+                    NSArray *updatedUserDevices = [mutableDevicesValues filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+                        return ![storedDevicesValues containsObject:evaluatedObject];
+                    }]];
+
+                    if (updatedUserDevices.count)
+                    {
+                        updatedUsersDevices[userId] = updatedUserDevices;
+                    }
+                    
+                    // Update the store
+                    // Note that devices which aren't in the response will be removed from the store
+                    [self->crypto.store storeDevicesForUser:userId devices:mutabledevices];
+                }
             }
         }
-
+        
+        if (updatedUsersDevices.count)
+        {
+            // Post notification using MXCrypto instance as MXDeviceListOperationsPool is an internal class.
+            [[NSNotificationCenter defaultCenter] postNotificationName:MXDeviceListDidUpdateUsersDevicesNotification object:self->crypto userInfo:updatedUsersDevices];
+        }
+        
         // Delay
         dispatch_async(self->crypto.matrixRestClient.completionQueue, ^{
-
+            
             for (MXDeviceListOperation *operation in self.operations)
             {
                 // Report the success to children

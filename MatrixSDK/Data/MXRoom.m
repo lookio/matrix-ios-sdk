@@ -415,7 +415,7 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
         // We can use roomState.members because, even in case of lazy loading of room members,
         // my user must be in roomState.members
         MXRoomMembers *roomMembers = roomState.members;
-        MXRoomMember *myUser = [roomMembers memberWithUserId:self.mxSession.myUser.userId];
+        MXRoomMember *myUser = [roomMembers memberWithUserId:self.mxSession.myUserId];
         BOOL isDirect = NO;
 
         if (myUser.originalEvent.content[@"is_direct"])
@@ -2281,7 +2281,7 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
     event.eventId = eventId;
     event.wireType = eventType;
     event.originServerTs = (uint64_t) ([[NSDate date] timeIntervalSince1970] * 1000);
-    event.sender = mxSession.myUser.userId;
+    event.sender = mxSession.myUserId;
     event.wireContent = content;
     
     return event;
@@ -2644,7 +2644,7 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
     // Prepare read receipt update.
     // Retrieve the current read receipt event id
     NSString *currentReadReceiptEventId;
-    NSString *myUserId = mxSession.myUser.userId;
+    NSString *myUserId = mxSession.myUserId;
     MXReceiptData* currentData = [mxSession.store getReceiptInRoom:self.roomId forUserId:myUserId];
     if (currentData)
     {
@@ -2767,7 +2767,7 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
     }
 
     MXEvent *event;
-    NSString* myUserId = mxSession.myUser.userId;
+    NSString* myUserId = mxSession.myUserId;
     MXReceiptData *currentReceiptData = [mxSession.store getReceiptInRoom:self.roomId forUserId:myUserId];
 
     // Prepare updated read receipt
@@ -2834,7 +2834,7 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
     // if some receipts are found
     if (receipts)
     {
-        NSString* myUserId = mxSession.myUser.userId;
+        NSString* myUserId = mxSession.myUserId;
         NSMutableArray* res = [[NSMutableArray alloc] init];
         
         // Remove the oneself receipts
@@ -2918,7 +2918,7 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
 - (void)forgetReadMarker
 {
     // Retrieve the current position
-    NSString *myUserId = mxSession.myUser.userId;
+    NSString *myUserId = mxSession.myUserId;
     MXReceiptData* currentData = [mxSession.store getReceiptInRoom:self.roomId forUserId:myUserId];
     if (currentData)
     {
@@ -2979,7 +2979,7 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
             operation = [self members:^(MXRoomMembers *roomMembers) {
                 MXStrongifyAndReturnIfNil(self);
 
-                NSString *myUserId = self.mxSession.myUser.userId;
+                NSString *myUserId = self.mxSession.myUserId;
 
                 // By default mark as direct this room for the oldest joined member.
                 NSArray<MXRoomMember *> *members = roomMembers.joinedMembers;
@@ -3066,9 +3066,9 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
                                        failure:failure];
 
         // Wait for the event coming back from the hs
-        id eventBackListener;
+        __block id eventBackListener;
         eventBackListener = [self listenToEventsOfTypes:@[kMXEventTypeStringRoomEncryption] onEvent:^(MXEvent *event, MXTimelineDirection direction, MXRoomState *roomState) {
-
+            
             [self removeListener:eventBackListener];
 
             // Dispatch to let time to MXCrypto to digest the m.room.encryption event
@@ -3134,7 +3134,9 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
             }
             else
             {
-                success([crypto trustLevelSummaryForUserIds:memberIds]);
+                [crypto trustLevelSummaryForUserIds:memberIds onComplete:^(MXUsersTrustLevelSummary *trustLevelSummary) {
+                    success(trustLevelSummary);
+                }];
             }
             
         } failure:failure];

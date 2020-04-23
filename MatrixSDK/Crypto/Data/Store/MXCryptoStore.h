@@ -189,6 +189,13 @@
  */
 - (MXCrossSigningInfo*)crossSigningKeysForUser:(NSString*)userId;
 
+/**
+ Return all cross-signing keys we know about.
+ 
+ @return all cross signing keys.
+ */
+- (NSArray<MXCrossSigningInfo*> *)crossSigningKeys;
+
 
 #pragma mark - Message keys
 
@@ -311,6 +318,14 @@
  @return a MXOutgoingRoomKeyRequest matching the request, or nil if not found.
  */
 - (MXOutgoingRoomKeyRequest*)outgoingRoomKeyRequestWithState:(MXRoomKeyRequestState)state;
+
+/**
+ Get all outgoing key requests that match the state.
+ 
+ @param state to look for.
+ @return a MXOutgoingRoomKeyRequest matching the request, or nil if not found.
+ */
+- (NSArray<MXOutgoingRoomKeyRequest*> *)allOutgoingRoomKeyRequestsWithState:(MXRoomKeyRequestState)state;
 
 /**
  Store an outgoing room key request.

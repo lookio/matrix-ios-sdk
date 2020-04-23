@@ -516,7 +516,7 @@
     for (MXRoomMember *member in roomState.members.members)
     {
         if ((member.membership == MXMembershipJoin || member.membership == MXMembershipInvite)
-            && ![member.userId isEqualToString:session.myUser.userId])
+            && ![member.userId isEqualToString:session.myUserId])
         {
             [otherMembers addObject:member];
         }

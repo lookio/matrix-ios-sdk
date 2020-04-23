@@ -47,7 +47,7 @@
 
 #pragma mark - Constants definitions
 
-const NSString *MatrixSDKVersion = @"0.15.2";
+const NSString *MatrixSDKVersion = @"0.16.0";
 NSString *const kMXSessionStateDidChangeNotification = @"kMXSessionStateDidChangeNotification";
 NSString *const kMXSessionNewRoomNotification = @"kMXSessionNewRoomNotification";
 NSString *const kMXSessionWillLeaveRoomNotification = @"kMXSessionWillLeaveRoomNotification";
@@ -252,6 +252,21 @@ typedef void (^MXOnResumeDone)(void);
         [self setState:MXSessionStateInitialised];
     }
     return self;
+}
+
+- (MXCredentials *)credentials
+{
+    return matrixRestClient.credentials;
+}
+
+- (NSString *)myUserId
+{
+    return matrixRestClient.credentials.userId;
+}
+
+- (NSString *)myDeviceId
+{
+    return matrixRestClient.credentials.deviceId;
 }
 
 - (void)setState:(MXSessionState)state

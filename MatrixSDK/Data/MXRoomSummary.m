@@ -377,10 +377,15 @@ static NSUInteger const kMXRoomSummaryTrustComputationDelayMs = 1000;
                 newOperation = [liveTimeline paginate:messagesToPaginate direction:MXTimelineDirectionBackwards onlyFromStore:NO includeEvents:NO complete:^(NSArray<MXEvent *> *items) {
 
                     // Received messages have been stored in the store. We can make a new loop
-                    [self fetchLastMessage:complete failure:failure
-                        lastEventIdChecked:lastEventIdCheckedInBlock
-                                 operation:(operation ? operation : newOperation)
-                                    commit:commit];
+                    // XXX: This is only true for a permanent storage. Only MXNoStore is not permanent.
+                    // MXNoStore is only used for tests. We can skip it here.
+                    if (self.mxSession.store.isPermanent)
+                    {
+                        [self fetchLastMessage:complete failure:failure
+                            lastEventIdChecked:lastEventIdCheckedInBlock
+                                     operation:(operation ? operation : newOperation)
+                                        commit:commit];
+                    }
 
                 } failure:failure];
 
@@ -469,15 +474,10 @@ static NSUInteger const kMXRoomSummaryTrustComputationDelayMs = 1000;
 - (void)setIsEncrypted:(BOOL)isEncrypted
 {
     _isEncrypted = isEncrypted;
+    
     if (_isEncrypted && [MXSDKOptions sharedInstance].computeE2ERoomSummaryTrust)
     {
-        // Bootstrap trust computation
-        [self registerTrustLevelDidChangeNotifications];
-        
-        if (!self.trust)
-        {
-            [self triggerComputeTrust:YES];
-        }
+        [self bootstrapTrustLevelComputation];
     }
 }
 
@@ -487,6 +487,20 @@ static NSUInteger const kMXRoomSummaryTrustComputationDelayMs = 1000;
     if (_isEncrypted && [MXSDKOptions sharedInstance].computeE2ERoomSummaryTrust)
     {
         [self triggerComputeTrust:YES];
+    }
+}
+
+- (void)bootstrapTrustLevelComputation
+{
+    if (_isEncrypted && [MXSDKOptions sharedInstance].computeE2ERoomSummaryTrust)
+    {
+        // Bootstrap trust computation
+        [self registerTrustLevelDidChangeNotifications];
+        
+        if (!self.trust)
+        {
+            [self triggerComputeTrust:YES];
+        }
     }
 }
 
@@ -544,7 +558,8 @@ static NSUInteger const kMXRoomSummaryTrustComputationDelayMs = 1000;
     // Decide what to do
     if (nextTrustComputation == MXRoomSummaryNextTrustComputationNone)
     {
-        nextTrustComputation = MXRoomSummaryNextTrustComputationPending;
+        nextTrustComputation = forceDownload ? MXRoomSummaryNextTrustComputationPendingWithForceDownload
+        : MXRoomSummaryNextTrustComputationPending;
     }
     else
     {
@@ -564,10 +579,10 @@ static NSUInteger const kMXRoomSummaryTrustComputationDelayMs = 1000;
     MXWeakify(self);
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, kMXRoomSummaryTrustComputationDelayMs * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
         MXStrongifyAndReturnIfNil(self);
-        self->nextTrustComputation = MXRoomSummaryNextTrustComputationNone;
 
         BOOL forceDownload = (self->nextTrustComputation == MXRoomSummaryNextTrustComputationPendingWithForceDownload);
-        
+        self->nextTrustComputation = MXRoomSummaryNextTrustComputationNone;
+
         if (self.mxSession.state == MXSessionStateRunning)
         {
             [self computeTrust:forceDownload];
@@ -809,10 +824,10 @@ static NSUInteger const kMXRoomSummaryTrustComputationDelayMs = 1000;
         
         _hiddenFromUser = [aDecoder decodeBoolForKey:@"hiddenFromUser"];
         
-        if (_isEncrypted && !_trust)
+        if (_isEncrypted && [MXSDKOptions sharedInstance].computeE2ERoomSummaryTrust)
         {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self triggerComputeTrust:YES];
+                [self bootstrapTrustLevelComputation];
             });
         }
     }
