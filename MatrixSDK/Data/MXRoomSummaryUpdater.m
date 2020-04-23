@@ -81,8 +81,10 @@
         // Accept event related to profile change only if the flag is NO
         if (!_ignoreMemberProfileChanges || !event.isUserProfileChange)
         {
-            summary.lastMessageEvent = event;
-            updated = YES;
+            if (![event.content[@"membership"] isEqualToString: @"join"]){
+                summary.lastMessageEvent = event;
+                updated = YES;
+            }
         }
     }
 
