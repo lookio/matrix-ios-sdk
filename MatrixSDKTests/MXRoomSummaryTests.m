@@ -117,8 +117,10 @@ NSString *uisiString = @"The sender's device has not sent us the keys for this m
         }
         else
         {
-            summary.lastMessageEvent = event;
-            updated = YES;
+            if (![event.content[@"membership"] isEqualToString: @"join"]){
+                summary.lastMessageEvent = event;
+                updated = YES;
+            }
         }
     }
     else if ([self.description containsString:@"testStatePassedToMXRoomSummaryUpdating"])

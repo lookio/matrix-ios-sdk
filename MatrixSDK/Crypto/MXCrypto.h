@@ -55,6 +55,11 @@ FOUNDATION_EXPORT NSString *const kMXCryptoRoomKeyRequestNotificationRequestKey;
 FOUNDATION_EXPORT NSString *const kMXCryptoRoomKeyRequestCancellationNotification;
 FOUNDATION_EXPORT NSString *const kMXCryptoRoomKeyRequestCancellationNotificationRequestKey;
 
+/**
+ Notification name sent when users devices list are updated. Provides user ids and their corresponding updated devices.
+ Give an associated userInfo dictionary of type NSDictionary<NSString*, NSArray<MXDeviceInfo*>*>.
+ */
+extern NSString *const MXDeviceListDidUpdateUsersDevicesNotification;
 
 /**
  A `MXCrypto` class instance manages the end-to-end crypto for a MXSession instance.
@@ -248,6 +253,19 @@ FOUNDATION_EXPORT NSString *const kMXCryptoRoomKeyRequestCancellationNotificatio
 - (void)setDevicesKnown:(MXUsersDevicesMap<MXDeviceInfo*>*)devices
                complete:(void (^)(void))complete;
 
+/**
+ Update the verification state of the given user.
+ 
+ @param verificationStatus the new verification status.
+ @param userId the user.
+ 
+ @param success A block object called when the operation succeeds.
+ @param failure A block object called when the operation fails.
+ */
+- (void)setUserVerification:(BOOL)verificationStatus forUser:(NSString*)userId
+                    success:(void (^)(void))success
+                    failure:(void (^)(NSError *error))failure;
+
 
 #pragma mark - Cross-signing trust
 
@@ -270,9 +288,9 @@ FOUNDATION_EXPORT NSString *const kMXCryptoRoomKeyRequestCancellationNotificatio
  Get the stored summary of users trust level (trusted users and devices count).
  
  @param userIds The user ids.
- @return the trust summary.
+ @param onComplete the callback called once operation is done.
  */
-- (MXUsersTrustLevelSummary *)trustLevelSummaryForUserIds:(NSArray<NSString*>*)userIds;
+- (void)trustLevelSummaryForUserIds:(NSArray<NSString*>*)userIds onComplete:(void (^)(MXUsersTrustLevelSummary *trustLevelSummary))onComplete;
 
 
 #pragma mark - Users keys
@@ -445,6 +463,23 @@ FOUNDATION_EXPORT NSString *const kMXCryptoRoomKeyRequestCancellationNotificatio
  @param onComplete A block object called when the operation completes.
  */
 - (void)ignoreAllPendingKeyRequestsFromUser:(NSString*)userId andDevice:(NSString*)deviceId onComplete:(void (^)(void))onComplete;
+
+/**
+ Enable or disable outgoing key share requests.
+ Enabled by default
+ 
+ @param enabled the new enable state.
+ @param onComplete the block called when the operation completes
+ */
+- (void)setOutgoingKeyRequestsEnabled:(BOOL)enabled onComplete:(void (^)(void))onComplete;
+- (BOOL)isOutgoingKeyRequestsEnabled;
+
+/**
+ Automatically re-enable outgoing key share requests once another device has been verified.
+ 
+ Default is YES.
+ */
+@property (nonatomic) BOOL enableOutgoingKeyRequestsOnceSelfVerificationDone;
 
 /**
  Rerequest the encryption keys required to decrypt an event.

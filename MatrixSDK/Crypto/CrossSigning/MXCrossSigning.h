@@ -28,6 +28,18 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Constants
 
 /**
+ Notification name sent when current user sign in on new devices. Provides new device ids.
+ It is sent only if our session can cross-sign the new devices.
+ Give an associated userInfo dictionary of type NSDictionary<NSString*, NSArray<NSString*>*> with following key: "deviceIds". Use constants below for convenience.
+ */
+extern NSString *const MXCrossSigningMyUserDidSignInOnNewDeviceNotification;
+
+/**
+ userInfo dictionary keys used by `MXCrossSigningDidDetectNewSignInNotification`.
+ */
+extern NSString *const MXCrossSigningNotificationDeviceIdsKey;
+
+/**
  Cross-signing state of the current acount.
  */
 typedef NS_ENUM(NSInteger, MXCrossSigningState)

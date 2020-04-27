@@ -1,23 +1,48 @@
-Changes in Matrix iOS SDK in 0.16.0 (2019-xx-xx)
-===============================================
+Changes in Matrix iOS SDK in 0.16.1 (2020-04-xx)
+================================================
 
 Improvements:
- * Make enums conform to `Equatable`/`Hashable` where applicable.
- * Aggregations: Implement m.reference aggregations, aka thread ([MSC1849](https://github.com/matrix-org/matrix-doc/blob/matthew/msc1849/proposals/1849-aggregations.md)).
+ * MXHTTPClient: Log HTTP requests methods.
+ * MXCrypto: Make trustLevelSummaryForUserIds async (vector-im/riot-ios/issues/3126).
+ * MXJingleCallAudioSessionConfigurator: Remove workaround since it is no longer needed (PR #815).
+
+Bug fix:
+ * Fix race condition in MXSecretShareManager (vector-im/riot-ios/issues/3123).
+ * Too much MXDeviceInfoTrustLevelDidChangeNotification and MXCrossSigningInfoTrustLevelDidChangeNotification (vector-im/riot-ios/issues/3121).
+ * VoiP: Fix remote ice candidates being added before remote description is setup (vector-im/riot-ios/issues/1784).
+ * MXDeviceListOperationsPool: Post MXDeviceListDidUpdateUsersDevicesNotification notification only for new changes never seen before (vector-im/riot-ios/issues/3120).
+
+API break:
+ * MXCrypto: trustLevelSummaryForUserIds: is now async.
+
+Changes in Matrix iOS SDK in 0.16.0 (2020-04-17)
+================================================
+
+Improvements:
  * Cross-Signing: Add a new module, MXCrossSigning, to handle device cross-signing (vector-im/riot-ios/issues/2890).
  * Verification by DM: Support QR code (vector-im/riot-ios/issues/2921).
- * MXRoom: Add a method to retrieve trusted members count in an encrypted room.
- * MXSession: Add createRoomWithParameters with a MXRoomCreationParameters model class.
- * MXRoomCreationParameters: Support the initial_state parameter and allow e2e on room creation (vector-im/riot-ios/issues/2943).
- * MXCrypto: Expose devicesForUser.
+ * MXCrypto: Change the threading model to make [MXCrypto decryptEvent:] less blocking.
  * MXCrypto: Restart broken Olm sessions ([MSC1719](https://github.com/matrix-org/matrix-doc/pull/1719)) (vector-im/riot-ios/issues/2129).
+ * MXCrypto: Expose devicesForUser.
+ * MXCrypto: the `setDeviceVerification` method now downloads all user's devices if the device is not yet known.
+ * MXCrypto: Add the option to disable sending key share requests (`[MXCrypto setOutgoingKeyRequestsEnabled:]`).
+ * MXRestClient: Use r0 APIs for crypto endpoints (PR #826).
+ * MXDeviceList: Post `MXDeviceListDidUpdateUsersDevicesNotification` notification when users devices list are updated.
+ * MXSession: Add credentials, myUserId and myDeviceId shorcuts.
+ * MXSession: Add createRoomWithParameters with a MXRoomCreationParameters model class.
+ * MXRoom: Add a method to retrieve trusted members count in an encrypted room.
+ * MXRoomCreationParameters: Support the initial_state parameter and allow e2e on room creation (vector-im/riot-ios/issues/2943).
  * MXRoomSummary: Add the trust property to indicate trust in other users and devices in the room (vector-im/riot-ios/issues/2906).
+ * Aggregations: Implement m.reference aggregations, aka thread ([MSC1849](https://github.com/matrix-org/matrix-doc/blob/matthew/msc1849/proposals/1849-aggregations.md)).
  * MXStore: Add a method to get related events for a specific event.
  * MXPublicRoom: Add canonical alias property.
  * MXLogger: Add a parameter to indicate the number of log files.
+ * MXThrottler: Add this tool class to throttle actions.
+ * Make enums conform to `Equatable`/`Hashable` where applicable.
 
 Bug fix:
  * MXEventType: Fix Swift refinement.
+ * MXCrypto: Fix users keys download that can fail in some condition
  * MXCryptoStore does not store device.algorithm (https://github.com/vector-im/riot-ios/issues/2896).
 
 API break:

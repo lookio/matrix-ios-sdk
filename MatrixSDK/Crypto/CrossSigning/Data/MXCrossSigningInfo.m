@@ -37,6 +37,25 @@ NSString *const MXCrossSigningInfoTrustLevelDidChangeNotification = @"MXCrossSig
     return _keys[MXCrossSigningKeyType.userSigning];
 }
 
+- (BOOL)hasSameKeysAsCrossSigningInfo:(MXCrossSigningInfo*)otherCrossSigningInfo
+{
+    if (![self.userId isEqualToString:otherCrossSigningInfo.userId])
+    {
+        return NO;
+    }
+    
+    BOOL hasSameKeys = YES;
+    for (NSString *key in _keys)
+    {
+        if (![self.keys[key].keys isEqualToString:otherCrossSigningInfo.keys[key].keys])
+        {
+            hasSameKeys = NO;
+            break;
+        }
+    }
+    
+    return hasSameKeys;
+}
 
 #pragma mark - NSCoding
 
@@ -73,7 +92,12 @@ NSString *const MXCrossSigningInfoTrustLevelDidChangeNotification = @"MXCrossSig
     return self;
 }
 
-- (BOOL)updateTrustLevel:(MXUserTrustLevel*)trustLevel;
+- (void)setTrustLevel:(MXUserTrustLevel*)trustLevel
+{
+    _trustLevel = trustLevel;
+}
+
+- (BOOL)updateTrustLevel:(MXUserTrustLevel*)trustLevel
 {
     BOOL updated = NO;
 
@@ -104,6 +128,11 @@ NSString *const MXCrossSigningInfoTrustLevelDidChangeNotification = @"MXCrossSig
     keys[type] = crossSigningKey;
 
     _keys = keys;
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<MXCrossSigningInfo: %p> Trusted: %@\nMSK: %@\nSSK: %@\nUSK: %@", self, @(self.trustLevel.isCrossSigningVerified), self.masterKeys, self.selfSignedKeys, self.userSignedKeys];
 }
 
 @end

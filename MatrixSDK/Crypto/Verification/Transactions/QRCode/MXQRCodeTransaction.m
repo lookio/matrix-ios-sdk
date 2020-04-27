@@ -39,6 +39,7 @@ NSString * const MXKeyVerificationMethodReciprocate = @"m.reciprocate.v1";
 @interface MXQRCodeTransaction()
 
 @property (nonatomic, strong) MXQRCodeDataCoder *qrCodeDataCoder;
+@property (nonatomic, strong) MXQRCodeData *scannedOtherQRCodeData;
 
 @end
 
@@ -116,10 +117,12 @@ NSString * const MXKeyVerificationMethodReciprocate = @"m.reciprocate.v1";
         return;
     }
     
+    self.scannedOtherQRCodeData = otherQRCodeData;
+    
     // All checks are correct. Send the shared secret so that sender can trust me.
     // otherQRCodeData.sharedSecret will be used to send the start request
     [self startWithOtherQRCodeSharedSecret:otherQRCodeData.sharedSecret success:^{
-        [self trustOtherWithOtherQRCodeData:otherQRCodeData];
+        self.state = MXQRCodeTransactionStateWaitingOtherConfirm;
     } failure:^(NSError *error) {
         [self cancelWithCancelCode:MXTransactionCancelCode.invalidMessage];
     }];
@@ -131,6 +134,15 @@ NSString * const MXKeyVerificationMethodReciprocate = @"m.reciprocate.v1";
                                                              humanReadable:cancelContent.reason];
     
     self.state = MXQRCodeTransactionStateCancelled;
+}
+
+- (void)cancelWithCancelCode:(MXTransactionCancelCode*)code
+{
+    [self cancelWithCancelCode:code success:^{
+        self.state = MXQRCodeTransactionStateCancelledByMe;
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"[MXKeyVerification][MXSASTransaction] Fail to cancel with error: %@", error);
+    }];
 }
 
 #pragma mark - SDK-Private methods -
@@ -171,6 +183,32 @@ NSString * const MXKeyVerificationMethodReciprocate = @"m.reciprocate.v1";
     self.startContent = start;
     self.state = MXQRCodeTransactionStateQRScannedByOther;
 }
+
+- (void)handleDone:(MXKeyVerificationDone*)doneEvent
+{
+    switch (self.state) {
+        case MXQRCodeTransactionStateWaitingOtherConfirm:
+        {
+            if (self.scannedOtherQRCodeData)
+            {
+                [self trustOtherWithOtherQRCodeData:self.scannedOtherQRCodeData];
+            }
+            else
+            {
+                [self cancelWithCancelCode:MXTransactionCancelCode.unexpectedMessage];
+                NSLog(@"[MXQRCodeTransaction]: ERROR: Done event was already retrieved");
+            }
+        }
+            break;
+        case MXQRCodeTransactionStateScannedOtherQR:
+            [self cancelWithCancelCode:MXTransactionCancelCode.unexpectedMessage];
+            NSLog(@"[MXQRCodeTransaction]: ERROR: Unexpected state for done event");
+        default:
+            break;
+    }
+}
+
+#pragma mark - Private
 
 - (void)startWithOtherQRCodeSharedSecret:(NSData*)otherQRCodeSharedSecret success:(dispatch_block_t)success failure:(void (^)(NSError* error))failure;
 {
@@ -218,19 +256,21 @@ NSString * const MXKeyVerificationMethodReciprocate = @"m.reciprocate.v1";
 
 - (void)trustOtherWithOtherQRCodeData:(MXQRCodeData*)otherQRCodeData
 {
-    if (self.state != MXQRCodeTransactionStateScannedOtherQR)
+    if (self.state != MXQRCodeTransactionStateWaitingOtherConfirm)
     {
+        NSLog(@"[MXKeyVerification][MXQRCodeTransaction] trustOtherWithOtherQRCodeData: wrong state: %@", self);
+        [self cancelWithCancelCode:MXTransactionCancelCode.unexpectedMessage];
         return;
     }
     
-    NSString *currentUserId = self.manager.crypto.mxSession.myUser.userId;
+    NSString *currentUserId = self.manager.crypto.mxSession.myUserId;
     BOOL isSelfVerification = [currentUserId isEqualToString:self.otherUserId];
     
     // If not me sign his MSK and upload the signature
     if (otherQRCodeData.verificationMode == MXQRCodeVerificationModeVerifyingAnotherUser && !isSelfVerification)
     {
         // we should trust this master key
-        [self trustOtherUserWithId:self.otherUserId];
+        [self trustOtherUserWithId:self.otherUserId andDeviceId:self.otherDeviceId];
     }
     else if (otherQRCodeData.verificationMode == MXQRCodeVerificationModeSelfVerifyingMasterKeyNotTrusted && isSelfVerification)
     {
@@ -239,8 +279,8 @@ NSString * const MXKeyVerificationMethodReciprocate = @"m.reciprocate.v1";
     }
     else if (otherQRCodeData.verificationMode == MXQRCodeVerificationModeSelfVerifyingMasterKeyTrusted && isSelfVerification)
     {
-        // I'm the new device. The other device will sign me
-        [self sendVerified];
+        // I'm the new device. The other device will sign me. Trust the other device locally.
+        [self trustOtherUserWithId:self.otherUserId andDeviceId:self.otherDeviceId];
     }
     else
     {
@@ -253,29 +293,33 @@ NSString * const MXKeyVerificationMethodReciprocate = @"m.reciprocate.v1";
 {
     if (self.state != MXQRCodeTransactionStateQRScannedByOther)
     {
+        NSLog(@"[MXKeyVerification][MXQRCodeTransaction] trustOtherWithMyQRCodeData: wrong state: %@", self);
+        [self cancelWithCancelCode:MXTransactionCancelCode.unexpectedMessage];
         return;
     }
     
     if (!self.qrCodeData)
     {
+        NSLog(@"[MXKeyVerification][MXQRCodeTransaction] start: wrong state: %@", self);
+        [self cancelWithCancelCode:MXTransactionCancelCode.unexpectedMessage];
         return;
     }
     
     MXQRCodeData *qrCodeData = self.qrCodeData;
     
-    NSString *currentUserId = self.manager.crypto.mxSession.myUser.userId;
+    NSString *currentUserId = self.manager.crypto.mxSession.myUserId;
     BOOL isSelfVerification = [currentUserId isEqualToString:self.otherUserId];
     
     // If not me, sign their MSK and upload the signature
     if (qrCodeData.verificationMode == MXQRCodeVerificationModeVerifyingAnotherUser && !isSelfVerification)
     {
         // we should trust their master key
-        [self trustOtherUserWithId:self.otherUserId];
+        [self trustOtherUserWithId:self.otherUserId andDeviceId:self.otherDeviceId];
     }
     else if (qrCodeData.verificationMode == MXQRCodeVerificationModeSelfVerifyingMasterKeyNotTrusted && isSelfVerification)
     {
-        // I'm the new device. The other device will sign me
-        [self sendVerified];
+        // I'm the new device. The other device will sign me. Trust the other device locally.
+        [self trustOtherUserWithId:self.otherUserId andDeviceId:self.otherDeviceId];
     }
     else if (qrCodeData.verificationMode == MXQRCodeVerificationModeSelfVerifyingMasterKeyTrusted && isSelfVerification)
     {
@@ -289,28 +333,31 @@ NSString * const MXKeyVerificationMethodReciprocate = @"m.reciprocate.v1";
     }
 }
 
-- (void)trustOtherUserWithId:(NSString*)otherUserId
+- (void)trustOtherUserWithId:(NSString*)otherUserId andDeviceId:(NSString*)otherDeviceId
 {
-    if (!self.manager.crypto.crossSigning.canCrossSign)
-    {
-        // Cross-signing ability should have been checked before going into this hole
-        NSLog(@"[MXKeyVerification][MXQRCodeTransaction] trustOtherUserWithId: Cannot mark user %@ as verified because this device cannot cross-sign", otherUserId);
-        [self cancelWithCancelCode:MXTransactionCancelCode.user];
-        return;
-    }
+    NSLog(@"[MXKeyVerification][MXQRCodeTransaction] trustOtherUserWithId: Mark user %@:%@ as verified", otherUserId, otherDeviceId);
     
-    // we should trust his master key
-    [self.manager.crypto.crossSigning signUserWithUserId:otherUserId success:^{
-        [self sendVerified];
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"[MXKeyVerification][MXQRCodeTransaction] trustOtherWithQRCodeData: Fail to cross sign used with id: %@", self.otherUserId);
+    // Mark the device as locally verified
+    [self.manager.crypto setDeviceVerification:MXDeviceVerified forDevice:otherDeviceId ofUser:otherUserId success:^{
+        
+        // Mark user as verified
+        [self.manager.crypto setUserVerification:YES forUser:otherUserId success:^{
+            [self sendVerified];
+            
+        } failure:^(NSError *error) {
+            NSLog(@"[MXKeyVerification][MXQRCodeTransaction] trustOtherWithQRCodeData: Fail to cross sign user %@", otherUserId);
+            [self cancelWithCancelCode:MXTransactionCancelCode.mismatchedKeys];
+        }];
+        
+    } failure:^(NSError *error) {
+        NSLog(@"[MXKeyVerification][MXQRCodeTransaction] trustOtherWithQRCodeData: Fail to mark device %@:%@ as locally verified", otherUserId, otherDeviceId);
         [self cancelWithCancelCode:MXTransactionCancelCode.mismatchedKeys];
     }];
 }
 
 - (void)trustOtherDeviceWithId:(NSString*)otherDeviceId
 {
-    NSString *currentUserId = self.manager.crypto.mxSession.myUser.userId;
+    NSString *currentUserId = self.manager.crypto.mxSession.myUserId;
     
     // setDeviceVerification will automatically cross sign the device
     [self.manager.crypto setDeviceVerification:MXDeviceVerified forDevice:otherDeviceId ofUser:currentUserId success:^{
