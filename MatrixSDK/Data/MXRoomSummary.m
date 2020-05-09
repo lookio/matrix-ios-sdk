@@ -211,9 +211,9 @@ static NSUInteger const kMXRoomSummaryTrustComputationDelayMs = 1000;
             for (MXEvent *event in [store outgoingMessagesInRoom:_roomId])
             {
 
-                if ([event.eventId isEqualToString:_lastMessageEventId] &&
-                    ![event.content[@"membership"] isEqualToString: @"join"])
-                {
+//                if ([event.eventId isEqualToString:_lastMessageEventId] &&
+//                    ![event.content[@"membership"] isEqualToString: @"join"])
+//                {
                     lastMessageEvent = event;
                     break;
                 }
