@@ -186,11 +186,13 @@ typedef void (^MXOnRoomEvent)(MXEvent *event, MXTimelineDirection direction, MXR
  @return a MXHTTPOperation instance. This instance can be nil if no request
          to the homeserver is required.
  */
+
 - (MXHTTPOperation*)paginate:(NSUInteger)numItems
                    direction:(MXTimelineDirection)direction
                onlyFromStore:(BOOL)onlyFromStore
-                    complete:(void (^)(void))complete
-                     failure:(void (^)(NSError *error))failure NS_REFINED_FOR_SWIFT;
+               includeEvents:(BOOL)includeEvents
+                    complete:(void (^_Nullable)(NSArray<MXEvent *> *items))complete
+                     failure:(void (^_Nullable)(NSError * _Nullable error))failure NS_REFINED_FOR_SWIFT;
 
 /**
  Get the number of messages we can still back paginate from the store.
