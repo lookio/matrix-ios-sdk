@@ -214,11 +214,11 @@ typedef void (^MXOnResumeDone)(void);
 
         _acknowledgableEventTypes = @[kMXEventTypeStringRoomName,
                                       kMXEventTypeStringRoomTopic,
-                                     // kMXEventTypeStringRoomAvatar,
-                                     // kMXEventTypeStringRoomMember,
+                                      kMXEventTypeStringRoomAvatar,
+                                      kMXEventTypeStringRoomMember,
                                       kMXEventTypeStringRoomCreate,
                                       kMXEventTypeStringRoomEncrypted,
-                                     // kMXEventTypeStringRoomJoinRules,
+                                      kMXEventTypeStringRoomJoinRules,
                                       kMXEventTypeStringRoomPowerLevels,
                                       kMXEventTypeStringRoomAliases,
                                       kMXEventTypeStringRoomCanonicalAlias,
@@ -237,8 +237,8 @@ typedef void (^MXOnResumeDone)(void);
                                       kMXEventTypeStringSticker
                                       ];
 
-        _unreadEventTypes = @[//kMXEventTypeStringRoomName,
-                              //kMXEventTypeStringRoomTopic,
+        _unreadEventTypes = @[kMXEventTypeStringRoomName,
+                              kMXEventTypeStringRoomTopic,
                               kMXEventTypeStringRoomMessage,
                               kMXEventTypeStringCallInvite,
                               kMXEventTypeStringRoomEncrypted,
