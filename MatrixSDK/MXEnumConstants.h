@@ -104,6 +104,14 @@ FOUNDATION_EXPORT NSString *const kMXRoomDirectoryVisibilityPublic;
  */
 typedef NSString* MXRoomHistoryVisibility NS_REFINED_FOR_SWIFT;
 
+typedef NSString* MXRoomMetadata NS_REFINED_FOR_SWIFT;
+
+FOUNDATION_EXPORT NSString *const kMXRoomMetadataIntent;
+FOUNDATION_EXPORT NSString *const kMXRoomMetadataGroup;
+FOUNDATION_EXPORT NSString *const kMXRoomMetadataPeer;
+FOUNDATION_EXPORT NSString *const kMXRoomMetadataBusiness;
+
+
 /**
  All events while this is the m.room.history_visibility value may be shared by any
  participating homeserver with anyone, regardless of whether they have ever joined

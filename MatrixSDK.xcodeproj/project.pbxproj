@@ -484,7 +484,6 @@
 		32FE41371D0AB7070060835E /* MXEnumConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FE41351D0AB7070060835E /* MXEnumConstants.m */; };
 		32FFB4F0217E146A00C96002 /* MXRecoveryKey.h in Headers */ = {isa = PBXBuildFile; fileRef = 32FFB4EE217E146A00C96002 /* MXRecoveryKey.h */; };
 		32FFB4F1217E146A00C96002 /* MXRecoveryKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FFB4EF217E146A00C96002 /* MXRecoveryKey.m */; };
-		4B917E983A7E2B3015D2033C /* libPods-MatrixSDK-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCE4968AC1DB2D74B020E37F /* libPods-MatrixSDK-iOS.a */; };
 		71DE22E01BC7C51200284153 /* MXReceiptData.m in Sources */ = {isa = PBXBuildFile; fileRef = 71DE22DC1BC7C51200284153 /* MXReceiptData.m */; };
 		71DE22E11BC7C51200284153 /* MXReceiptData.h in Headers */ = {isa = PBXBuildFile; fileRef = 71DE22DD1BC7C51200284153 /* MXReceiptData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		92634B7F1EF2A37A00DB9F60 /* MXCallAudioSessionConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = 92634B7E1EF2A37A00DB9F60 /* MXCallAudioSessionConfigurator.h */; };
@@ -1105,6 +1104,7 @@
 		F08B8D5C1E014711006171A8 /* NSData+MatrixSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = F08B8D5A1E014711006171A8 /* NSData+MatrixSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F08B8D5D1E014711006171A8 /* NSData+MatrixSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = F08B8D5B1E014711006171A8 /* NSData+MatrixSDK.m */; };
 		F0C34CBB1C18C93700C36F09 /* MXSDKOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = F0C34CBA1C18C93700C36F09 /* MXSDKOptions.m */; };
+		F8FC50B9E7F58262FD03B947 /* libPods-MatrixSDK-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88C64B7F824D2EC851631AD1 /* libPods-MatrixSDK-iOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1586,6 +1586,7 @@
 		92634B811EF2E3C400DB9F60 /* MXCallKitConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MXCallKitConfiguration.m; sourceTree = "<group>"; };
 		9274AFE61EE580240009BEB6 /* MXCallKitAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MXCallKitAdapter.h; sourceTree = "<group>"; };
 		9274AFE71EE580240009BEB6 /* MXCallKitAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MXCallKitAdapter.m; sourceTree = "<group>"; };
+		A2BBF09205BE3B3292087452 /* Pods-MatrixSDK-MatrixSDK-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MatrixSDK-MatrixSDK-iOS.debug.xcconfig"; path = "Target Support Files/Pods-MatrixSDK-MatrixSDK-iOS/Pods-MatrixSDK-MatrixSDK-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		B10AFB4122A970060092E6AF /* MXEventReplace.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MXEventReplace.h; sourceTree = "<group>"; };
 		B10AFB4222A970060092E6AF /* MXEventReplace.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MXEventReplace.m; sourceTree = "<group>"; };
 		B10AFB4522AA8A8D0092E6AF /* MXEventEditsListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MXEventEditsListener.h; sourceTree = "<group>"; };
@@ -2556,7 +2557,7 @@
 				32C6F93919DD814400EA4E9C /* MatrixSDKTests */,
 				32C6F92E19DD814400EA4E9C /* Products */,
 				916911E77039455CC9D0900C /* Pods */,
-				10FA4A5252784B85B27DEA5B /* Frameworks */,
+				AC7A78002C4E170A2C30C944 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -2822,6 +2823,14 @@
 				92634B811EF2E3C400DB9F60 /* MXCallKitConfiguration.m */,
 			);
 			path = CallKit;
+			sourceTree = "<group>";
+		};
+		AC7A78002C4E170A2C30C944 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				88C64B7F824D2EC851631AD1 /* libPods-MatrixSDK-iOS.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		B113695D230AC9D900E2B2FA /* IdentityServer */ = {
@@ -3548,7 +3557,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 32C6F94019DD814400EA4E9C /* Build configuration list for PBXNativeTarget "MatrixSDK-iOS" */;
 			buildPhases = (
-				385E87177134AE6EBD88F314 /* [CP] Check Pods Manifest.lock */,
+				860F23040EBC237909043276 /* [CP] Check Pods Manifest.lock */,
 				32C6F92819DD814400EA4E9C /* Sources */,
 				32C6F92919DD814400EA4E9C /* Frameworks */,
 				32C6F92A19DD814400EA4E9C /* Headers */,
@@ -3625,7 +3634,7 @@
 		32C6F92419DD814400EA4E9C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1140;
 				ORGANIZATIONNAME = matrix.org;
 				TargetAttributes = {
 					32C6F92C19DD814400EA4E9C = {
@@ -4360,6 +4369,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -4420,6 +4430,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -4473,7 +4484,7 @@
 		};
 		32C6F94119DD814400EA4E9C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FFC02CAD08EAF4683778E451 /* Pods-MatrixSDK-MatrixSDK-iOS.debug.xcconfig */;
+			baseConfigurationReference = BF84A0414CD00BA8299F5136 /* Pods-MatrixSDK-iOS.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";

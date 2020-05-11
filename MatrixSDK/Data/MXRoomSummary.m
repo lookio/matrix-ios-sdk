@@ -210,7 +210,9 @@ static NSUInteger const kMXRoomSummaryTrustComputationDelayMs = 1000;
         {
             for (MXEvent *event in [store outgoingMessagesInRoom:_roomId])
             {
-                if ([event.eventId isEqualToString:_lastMessageEventId])
+
+                if ([event.eventId isEqualToString:_lastMessageEventId])//&&
+                    //![event.content[@"membership"] isEqualToString: @"join"])
                 {
                     lastMessageEvent = event;
                     break;
@@ -679,6 +681,24 @@ static NSUInteger const kMXRoomSummaryTrustComputationDelayMs = 1000;
             }
 
             lastMessageUpdated = [self.mxSession.roomSummaryUpdateDelegate session:self.mxSession updateRoomSummary:self withLastEvent:event eventState:state roomState:roomState];
+
+            for (MXEvent* event in state.stateEvents){
+
+                // Prevent to set lastMessageUpdated onjoin:
+
+//                if ([event.type isEqualToString: @"m.room.member"]) {
+//                    if ([event.JSONDictionary[@"content"][@"membership"] isEqualToString: @"join"]){
+//                        NSLog(@"");
+//                        lastMessageUpdated = NO;
+//                        self.lastMessageString = @"";
+//                        self.lastMessageEvent = nil;
+//                        self.lastMessageAttributedString = nil;
+//                    }
+//                }
+            }
+
+
+
             if (lastMessageUpdated)
             {
                 break;

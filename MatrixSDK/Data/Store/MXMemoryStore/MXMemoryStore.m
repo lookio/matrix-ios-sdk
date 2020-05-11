@@ -298,7 +298,9 @@
 #pragma mark - Matrix users
 - (void)storeUser:(MXUser *)user
 {
-    users[user.userId] = user;
+    @synchronized (self) {
+        users[user.userId] = user;
+    }
 }
 
 - (NSArray<MXUser *> *)users
@@ -308,7 +310,9 @@
 
 - (MXUser *)userWithUserId:(NSString *)userId
 {
-    return users[userId];
+   @synchronized (self) {
+         return users[userId];
+    }
 }
 
 #pragma mark - Matrix groups

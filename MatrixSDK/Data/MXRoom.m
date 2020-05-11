@@ -143,7 +143,7 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
             [room handleInviteDirectFlag];
         }
     }
-    return room;
+    return [MXSession appendMetadata:room];
 }
 
 - (void)close
@@ -181,13 +181,22 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
 
                 for (void (^onRequesterComplete)(MXEventTimeline *) in liveTimelineRequesters)
                 {
-                    onRequesterComplete(self->liveTimeline);
+                    if (onRequesterComplete != nil &&  ![onRequesterComplete isEqual:[NSNull null]]){
+                          onRequesterComplete(self->liveTimeline);
+                    }else{
+                        if (![onRequesterComplete isEqual:[NSNull null]]){
+                            onRequesterComplete(nil);
+                        }
+                    }
+
                 }
                 NSLog(@"[MXRoom] liveTimeline loaded. Pending requesters: %@", @(liveTimelineRequesters.count));
             }];
         }
-
-        [pendingLiveTimelineRequesters addObject:onComplete];
+        if (onComplete != nil && ![onComplete isEqual:[NSNull null]]){
+            [pendingLiveTimelineRequesters addObject:onComplete];
+        }
+        
 
         self->needToLoadLiveTimeline = NO;
     }
@@ -2739,6 +2748,10 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
     
     // Retrieve the most recent event of the room.
     MXEvent *lastEvent = [mxSession.store messagesEnumeratorForRoom:self.roomId].nextEvent;
+    if (lastEvent == nil){
+        return;
+    }
+    
     NSString *lastMessageEventId = lastEvent.eventId;
     
     // Sanity check: Do not send read marker on event without id.

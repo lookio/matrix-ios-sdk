@@ -935,8 +935,87 @@ typedef void (^MXOnResumeDone)(void);
 }
 
 
-#pragma mark - Server sync
 
+#pragma mark -Metadata
+static void deriveMetadataFromSync(MXRoom *room, NSArray* events) {
+    return;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
+        NSString *filePath = [MXSession getMavenArchiveFilepath];
+
+        for (MXEvent *event in events){
+
+            if ([event.type isEqualToString: @"m.room.metadata"]){
+                NSDictionary* dict = event.JSONDictionary;
+                NSString *mvRoomType = dict[@"content"][@"mvRoomType"];
+
+                if (mvRoomType.length > 0){
+
+                    NSString *key = room.roomId;
+                    NSDictionary *saveDict = @{key : mvRoomType};
+                    [NSKeyedArchiver archiveRootObject:saveDict toFile:filePath];
+
+                    //setting to in-memroy & archive:
+//                    if ([mvRoomType isEqualToString: kMXRoomMetadataPeer]){
+//                        room.mvRoomType =  kMXRoomMetadataPeer;
+//                    }
+//                    else if ([mvRoomType isEqualToString: kMXRoomMetadataBusiness]){
+//                        room.mvRoomType = kMXRoomMetadataBusiness;
+//                    }
+//                    else if ([mvRoomType isEqualToString: kMXRoomMetadataIntent]){
+//                        room.mvRoomType = kMXRoomMetadataIntent;
+//                    }
+//                    else if ([mvRoomType isEqualToString: kMXRoomMetadataGroup]){
+//                        room.mvRoomType = kMXRoomMetadataGroup;
+//                    }
+                }
+            }
+        }
+    });
+}
+
++ (NSString*)getMavenArchiveFilepath
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectoryPath = [paths objectAtIndex:0];
+    NSString *filePath = [documentsDirectoryPath stringByAppendingPathComponent:@"MavenMetadata"];
+    return  filePath;
+}
+
++ (MXRoom*) appendMetadata:(MXRoom *)room
+{
+    return room;
+
+    NSString *filePath = [MXSession getMavenArchiveFilepath];
+    NSString * mvRoomType = @"";
+
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        NSData *data = [NSData dataWithContentsOfFile:filePath];
+        NSDictionary *savedData = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+
+        if ([savedData objectForKey:room.roomId] != nil) {
+            mvRoomType = savedData[room.roomId];
+        }
+    }
+
+
+//    if ([mvRoomType isEqualToString: kMXRoomMetadataPeer]){
+//        room.mvRoomType =  kMXRoomMetadataPeer;
+//    }
+//    else if ([mvRoomType isEqualToString: kMXRoomMetadataBusiness]){
+//        room.mvRoomType = kMXRoomMetadataBusiness;
+//    }
+//    else if ([mvRoomType isEqualToString: kMXRoomMetadataIntent]){
+//        room.mvRoomType = kMXRoomMetadataIntent;
+//    }
+//    else if ([mvRoomType isEqualToString: kMXRoomMetadataGroup]){
+//        room.mvRoomType = kMXRoomMetadataGroup;
+//    }
+    return room;
+}
+
+
+#pragma mark - Server sync
 - (void)serverSyncWithServerTimeout:(NSUInteger)serverTimeout
                             success:(void (^)(void))success
                             failure:(void (^)(NSError *error))failure
@@ -1009,6 +1088,9 @@ typedef void (^MXOnResumeDone)(void);
                 // Retrieve existing room or create a new one
                 MXRoom *room = [self getOrCreateRoom:roomId notify:!isInitialSync];
 
+                ///Derive mvRoomType:
+                deriveMetadataFromSync(room, roomSync.timeline.events);
+
                 // Sync room
                 [room liveTimeline:^(MXEventTimeline *liveTimeline) {
                     [room handleJoinedRoomSync:roomSync];
@@ -1026,6 +1108,9 @@ typedef void (^MXOnResumeDone)(void);
 
                 // Retrieve existing room or create a new one
                 MXRoom *room = [self getOrCreateRoom:roomId notify:!isInitialSync];
+
+                ///Derive mvRoomType:
+                deriveMetadataFromSync(room, invitedRoomSync.inviteState.events);
 
                 // Prepare invited room
                 [room liveTimeline:^(MXEventTimeline *liveTimeline) {
@@ -1050,6 +1135,10 @@ typedef void (^MXOnResumeDone)(void);
                 MXRoom *room = [self roomWithRoomId:roomId];
                 if (room)
                 {
+
+                    ///Derive mvRoomType:
+
+
                     // FIXME SYNCV2: While 'handleArchivedRoomSync' is not available,
                     // use 'handleJoinedRoomSync' to pass the last events to the room before leaving it.
                     // The room will then able to notify its listeners.
@@ -2242,7 +2331,8 @@ typedef void (^MXOnResumeDone)(void);
     {
         room = [self createRoom:roomId notify:notify];
     }
-    return room;
+
+    return [MXSession appendMetadata:room];
 }
 
 - (MXRoom *)createRoom:(NSString *)roomId notify:(BOOL)notify
@@ -2327,7 +2417,8 @@ typedef void (^MXOnResumeDone)(void);
     {
         [self addRoom:room notify:NO];
     }
-    return room;
+
+    return [MXSession appendMetadata:room];
 }
 
 - (void)preloadRoomsData:(NSArray<NSString*> *)roomIds onComplete:(dispatch_block_t)onComplete
@@ -2351,6 +2442,7 @@ typedef void (^MXOnResumeDone)(void);
         }
     }
 
+    
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         NSLog(@"[MXSession] preloadRoomsForSyncResponse: DONE");
         onComplete();

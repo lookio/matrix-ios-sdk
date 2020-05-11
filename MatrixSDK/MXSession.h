@@ -467,6 +467,9 @@ FOUNDATION_EXPORT NSString *const kMXSessionNoRoomTag;
  */
 @property (nonatomic, readonly) MXAggregations *aggregations;
 
+#pragma mark -Metadata
++(NSString*)getMavenArchiveFilepath;
+
 #pragma mark - Class methods
 
 /**
@@ -977,6 +980,7 @@ typedef void (^MXOnBackgroundSyncFail)(NSError *error);
  */
 - (NSArray<MXRoomSummary*>*)roomsSummaries;
 
++ (MXRoom*) appendMetadata:(MXRoom *)room;
 /**
  Recompute all room summaries last message.
 

@@ -1198,8 +1198,11 @@ static NSUInteger preloadOptions;
 
 - (void)saveRoomsSummaries
 {
-    if (roomsToCommitForSummary.count)
-    {
+    if (roomsToCommitForSummary.count > 0  &&
+    roomsToCommitForSummary.allKeys.count > 0 &&
+    roomsToCommitForSummary != nil &&
+    roomsToCommitForSummary.allValues.count > 0){
+     
         // Take a snapshot of room ids to store to process them on the other thread
         NSDictionary *roomsToCommit = [NSDictionary dictionaryWithDictionary:roomsToCommitForSummary];
         [roomsToCommitForSummary removeAllObjects];
