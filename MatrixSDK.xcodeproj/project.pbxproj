@@ -486,6 +486,7 @@
 		32FFB4F1217E146A00C96002 /* MXRecoveryKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FFB4EF217E146A00C96002 /* MXRecoveryKey.m */; };
 		71DE22E01BC7C51200284153 /* MXReceiptData.m in Sources */ = {isa = PBXBuildFile; fileRef = 71DE22DC1BC7C51200284153 /* MXReceiptData.m */; };
 		71DE22E11BC7C51200284153 /* MXReceiptData.h in Headers */ = {isa = PBXBuildFile; fileRef = 71DE22DD1BC7C51200284153 /* MXReceiptData.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		90FA6FA5D20ACA29ED948558 /* libPods-MatrixSDK-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2026C7A6864BEF12C73AD95 /* libPods-MatrixSDK-iOS.a */; };
 		92634B7F1EF2A37A00DB9F60 /* MXCallAudioSessionConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = 92634B7E1EF2A37A00DB9F60 /* MXCallAudioSessionConfigurator.h */; };
 		92634B821EF2E3C400DB9F60 /* MXCallKitConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 92634B801EF2E3C400DB9F60 /* MXCallKitConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		92634B831EF2E3C400DB9F60 /* MXCallKitConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 92634B811EF2E3C400DB9F60 /* MXCallKitConfiguration.m */; };
@@ -1104,7 +1105,6 @@
 		F08B8D5C1E014711006171A8 /* NSData+MatrixSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = F08B8D5A1E014711006171A8 /* NSData+MatrixSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F08B8D5D1E014711006171A8 /* NSData+MatrixSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = F08B8D5B1E014711006171A8 /* NSData+MatrixSDK.m */; };
 		F0C34CBB1C18C93700C36F09 /* MXSDKOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = F0C34CBA1C18C93700C36F09 /* MXSDKOptions.m */; };
-		F8FC50B9E7F58262FD03B947 /* libPods-MatrixSDK-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88C64B7F824D2EC851631AD1 /* libPods-MatrixSDK-iOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1586,7 +1586,6 @@
 		92634B811EF2E3C400DB9F60 /* MXCallKitConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MXCallKitConfiguration.m; sourceTree = "<group>"; };
 		9274AFE61EE580240009BEB6 /* MXCallKitAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MXCallKitAdapter.h; sourceTree = "<group>"; };
 		9274AFE71EE580240009BEB6 /* MXCallKitAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MXCallKitAdapter.m; sourceTree = "<group>"; };
-		A2BBF09205BE3B3292087452 /* Pods-MatrixSDK-MatrixSDK-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MatrixSDK-MatrixSDK-iOS.debug.xcconfig"; path = "Target Support Files/Pods-MatrixSDK-MatrixSDK-iOS/Pods-MatrixSDK-MatrixSDK-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		B10AFB4122A970060092E6AF /* MXEventReplace.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MXEventReplace.h; sourceTree = "<group>"; };
 		B10AFB4222A970060092E6AF /* MXEventReplace.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MXEventReplace.m; sourceTree = "<group>"; };
 		B10AFB4522AA8A8D0092E6AF /* MXEventEditsListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MXEventEditsListener.h; sourceTree = "<group>"; };
@@ -1689,7 +1688,6 @@
 		B19A30D324042F2700FB6F35 /* MXSelfVerifyingMasterKeyNotTrustedQRCodeData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MXSelfVerifyingMasterKeyNotTrustedQRCodeData.m; sourceTree = "<group>"; };
 		B1DDC9D52418098200D208E3 /* MXIncomingSASTransaction_Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MXIncomingSASTransaction_Private.h; sourceTree = "<group>"; };
 		B1E09A0E2397FA950057C069 /* MatrixSDKTests-macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "MatrixSDKTests-macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BCE4968AC1DB2D74B020E37F /* libPods-MatrixSDK-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MatrixSDK-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD0431D223F108AED4C70A42 /* Pods-SDK-MatrixSDK-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SDK-MatrixSDK-iOS.debug.xcconfig"; path = "Target Support Files/Pods-SDK-MatrixSDK-iOS/Pods-SDK-MatrixSDK-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		BD96770F88F116285272DB47 /* Pods-MatrixSDKTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MatrixSDKTests.release.xcconfig"; path = "Target Support Files/Pods-MatrixSDKTests/Pods-MatrixSDKTests.release.xcconfig"; sourceTree = "<group>"; };
 		C387874E4837E1FC668170EA /* Pods-SDK-MatrixSDKTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SDK-MatrixSDKTests.release.xcconfig"; path = "Target Support Files/Pods-SDK-MatrixSDKTests/Pods-SDK-MatrixSDKTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -1711,6 +1709,7 @@
 		C6F935871E5B3BE600FC34BF /* MXJSONModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MXJSONModels.swift; sourceTree = "<group>"; };
 		C6FE1EEF1E65C4F7008587E4 /* MXAnalyticsDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MXAnalyticsDelegate.h; sourceTree = "<group>"; };
 		DCDFA3ABCED99811646ED8B6 /* Pods-SDK-MatrixSDK-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SDK-MatrixSDK-iOS.release.xcconfig"; path = "Target Support Files/Pods-SDK-MatrixSDK-iOS/Pods-SDK-MatrixSDK-iOS.release.xcconfig"; sourceTree = "<group>"; };
+		E2026C7A6864BEF12C73AD95 /* libPods-MatrixSDK-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MatrixSDK-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9B11A2D50665ADBB4B2F5C5 /* Pods-MatrixSDK-MatrixSDK-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MatrixSDK-MatrixSDK-iOS.release.xcconfig"; path = "Target Support Files/Pods-MatrixSDK-MatrixSDK-iOS/Pods-MatrixSDK-MatrixSDK-iOS.release.xcconfig"; sourceTree = "<group>"; };
 		ED2F344856EFFCA383E37B22 /* Pods-SDK-MatrixSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SDK-MatrixSDK.release.xcconfig"; path = "Target Support Files/Pods-SDK-MatrixSDK/Pods-SDK-MatrixSDK.release.xcconfig"; sourceTree = "<group>"; };
 		F0173EAA1FCF0E8800B5F6A3 /* MXGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MXGroup.h; sourceTree = "<group>"; };
@@ -1737,7 +1736,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B917E983A7E2B3015D2033C /* libPods-MatrixSDK-iOS.a in Frameworks */,
+				90FA6FA5D20ACA29ED948558 /* libPods-MatrixSDK-iOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1802,14 +1801,6 @@
 				B146D48121A5A04200D8C2C6 /* Store */,
 			);
 			path = Data;
-			sourceTree = "<group>";
-		};
-		10FA4A5252784B85B27DEA5B /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				BCE4968AC1DB2D74B020E37F /* libPods-MatrixSDK-iOS.a */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		320B3931239FA54300BE2C06 /* Requests */ = {
@@ -2828,7 +2819,7 @@
 		AC7A78002C4E170A2C30C944 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				88C64B7F824D2EC851631AD1 /* libPods-MatrixSDK-iOS.a */,
+				E2026C7A6864BEF12C73AD95 /* libPods-MatrixSDK-iOS.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -3557,7 +3548,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 32C6F94019DD814400EA4E9C /* Build configuration list for PBXNativeTarget "MatrixSDK-iOS" */;
 			buildPhases = (
-				860F23040EBC237909043276 /* [CP] Check Pods Manifest.lock */,
+				6D19BA0E688DDB08694DE55C /* [CP] Check Pods Manifest.lock */,
 				32C6F92819DD814400EA4E9C /* Sources */,
 				32C6F92919DD814400EA4E9C /* Frameworks */,
 				32C6F92A19DD814400EA4E9C /* Headers */,
@@ -3707,7 +3698,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		385E87177134AE6EBD88F314 /* [CP] Check Pods Manifest.lock */ = {
+		6D19BA0E688DDB08694DE55C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -4484,7 +4475,7 @@
 		};
 		32C6F94119DD814400EA4E9C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BF84A0414CD00BA8299F5136 /* Pods-MatrixSDK-iOS.debug.xcconfig */;
+			baseConfigurationReference = FFC02CAD08EAF4683778E451 /* Pods-MatrixSDK-MatrixSDK-iOS.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";

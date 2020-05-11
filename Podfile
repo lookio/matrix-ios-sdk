@@ -2,13 +2,13 @@
 
 abstract_target 'MatrixSDK' do
     
-    pod 'AFNetworking',  '~> 4.0',:inhibit_warnings => true #'~> 3.2.0',
-    pod 'GZIP', '~> 1.2.2',:inhibit_warnings => true
+    pod 'AFNetworking',  '~> 4.0.0',:inhibit_warnings => true #'~> 3.2.0',
+    pod 'GZIP', '~> 1.2.3',:inhibit_warnings => true
     
     pod 'OLMKit', '~> 3.1.0', :inhibit_warnings => true
     #pod 'OLMKit', :path => '../olm/OLMKit.podspec'
     
-    pod 'Realm', '~> 4.4.1',:inhibit_warnings => true  #'~> 3.17.3'
+    pod 'Realm', '~> 4.4.0',:inhibit_warnings => true  #'~> 3.17.3'
     pod 'libbase58', '~> 0.1.4',:inhibit_warnings => true
     
     target 'MatrixSDK-iOS' do
