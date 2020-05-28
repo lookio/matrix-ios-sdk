@@ -131,6 +131,8 @@
 
             case MXEventTypeRoomMember:
                 hasRoomMembersChange = YES;
+                //summary.avatar = roomState.avatar;
+                //updated = YES;
                 break;
 
             case MXEventTypeRoomEncryption:
