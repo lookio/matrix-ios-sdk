@@ -47,7 +47,7 @@
 
 #pragma mark - Constants definitions
 
-const NSString *MatrixSDKVersion = @"0.16.4";
+const NSString *MatrixSDKVersion = @"0.16.5";
 NSString *const kMXSessionStateDidChangeNotification = @"kMXSessionStateDidChangeNotification";
 NSString *const kMXSessionNewRoomNotification = @"kMXSessionNewRoomNotification";
 NSString *const kMXSessionWillLeaveRoomNotification = @"kMXSessionWillLeaveRoomNotification";
@@ -3536,7 +3536,19 @@ static void deriveMetadataFromSync(MXRoom *room, NSArray* events) {
                            success:(void (^)(void))success
                            failure:(void (^)(NSError *error))failure
 {
-    return [matrixRestClient setAccountData:data forType:type success:success failure:failure];
+    MXWeakify(self);
+    return [matrixRestClient setAccountData:data forType:type success:^{
+        MXStrongifyAndReturnIfNil(self);
+        
+        // Update data in place
+        [self->_accountData updateDataWithType:type data:data];
+        
+        if (success)
+        {
+            success();
+        }
+        
+    } failure:failure];
 }
 
 - (MXHTTPOperation *)setAccountDataIdentityServer:(NSString *)identityServer
