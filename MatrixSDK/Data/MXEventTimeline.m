@@ -352,6 +352,13 @@ NSString *const kMXRoomInviteStateEventIdPrefix = @"invite-";
         // Inform the method caller
         [serverFetched addObjectsFromArray:foundItems];
         if (includeEvents){
+           
+//            if (serverFetched.count > 0){
+//                for (MXEvent* event in serverFetched){
+//                    [self->store storeEventForRoom:self->room.roomId event:event direction:direction];
+//                }
+//            }
+            
             complete(serverFetched);
         }else{
             complete(nil);
