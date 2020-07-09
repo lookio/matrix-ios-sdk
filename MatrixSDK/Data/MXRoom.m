@@ -206,9 +206,11 @@ NSString *const kMXRoomInitialSyncNotification = @"kMXRoomInitialSyncNotificatio
 
 - (void)state:(void (^)(MXRoomState *))onComplete
 {
-    [self liveTimeline:^(MXEventTimeline *theLiveTimeline) {
-        onComplete(theLiveTimeline.state);
-    }];
+    @synchronized(self) {
+        [self liveTimeline:^(MXEventTimeline *theLiveTimeline) {
+            onComplete(theLiveTimeline.state);
+        }];
+    }
 }
 
 - (MXHTTPOperation *)members:(void (^)(MXRoomMembers *roomMembers))success
