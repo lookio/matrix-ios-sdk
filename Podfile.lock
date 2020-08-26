@@ -39,7 +39,7 @@ PODS:
   - Realm/Headers (4.4.1)
 
 DEPENDENCIES:
-  - AFNetworking (~> 4.0.0)
+  - AFNetworking (~> 4.0.1)
   - GZIP (~> 1.2.3)
   - libbase58 (~> 0.1.4)
   - OHHTTPStubs (~> 6.1.0)
@@ -63,6 +63,6 @@ SPEC CHECKSUMS:
   OLMKit: 4ee0159d63feeb86d836fdcfefe418e163511639
   Realm: 4eb04d7487bd43c0581256f40b424eafb711deff
 
-PODFILE CHECKSUM: 0a03cdee78ad4df85236498363d5aa4b12ed362e
+PODFILE CHECKSUM: 8f6f44e616af4ec19a431522a9365940677dece1
 
 COCOAPODS: 1.9.3

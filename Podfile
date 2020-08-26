@@ -2,7 +2,7 @@
 
 abstract_target 'MatrixSDK' do
     
-    pod 'AFNetworking',  '~> 4.0.0',:inhibit_warnings => true #'~> 3.2.0',
+    pod 'AFNetworking',  '~> 4.0.1',:inhibit_warnings => true #'~> 3.2.0',
     pod 'GZIP', '~> 1.2.3',:inhibit_warnings => true
     
     pod 'OLMKit', '~> 3.1.0', :inhibit_warnings => true
